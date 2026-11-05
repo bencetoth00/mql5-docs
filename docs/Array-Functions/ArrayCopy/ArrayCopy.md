@@ -1,0 +1,49 @@
+# ArrayCopy
+
+ArrayCopy
+
+It copies an array into another one.
+
+|  |
+| --- |
+| int  ArrayCopy(     void&        dst\_array[],         // destination array     const void&  src\_array[],         // source array     int          dst\_start=0,         // index starting from which write into destination array     int          src\_start=0,         // first index of a source array     int          count=WHOLE\_ARRAY    // number of elements     ); |
+
+Parameters
+
+dst\_array[]
+
+[out]  Destination array
+
+src\_array[]
+
+[in]  Source array
+
+dst\_start=0
+
+[in]  Starting index from the destination array. By default, start index is 0.
+
+src\_start=0
+
+[in]  Starting index for the source array. By default, start index is 0.
+
+count=WHOLE\_ARRAY
+
+[in]  Number of elements that should be copied. By default, the whole array is copied (count=[WHOLE\_ARRAY](../../Constants,-Enumerations-and-Structures/Named-Constants/Other-Constants/Other-Constants.md)).
+
+Return Value
+
+It returns the number of copied elements.
+
+Note
+
+If count<0 or count>src\_size-src\_start, all the remaining array part is copied. Arrays are copied from left to right. For series arrays, the starting position is correctly defined adjusted for copying from left to right.
+
+If arrays are of different types, during copying it tries to transform each element of a source array into the type of the destination array. A string array can be copied into a string array only. Array of [classes and structures](../../Language-Basics/Data-Types/Structures,-Classes-and-Interfaces/Structures,-Classes-and-Interfaces.md) containing objects that require initialization aren't copied. An array of structures can be copied into an array of the same type only.
+
+For dynamic arrays with indexing as in [timeseries](../../Timeseries-and-Indicators-Access/Indexing-Direction-in-Arrays,-Buffers-and-Timeseries/Indexing-Direction-in-Arrays,-Buffers-and-Timeseries.md), the size of a destination array is automatically increased to the amount of copied data (if the latter exceeds the array size). The destination array size is not decreased automatically.
+
+Example:
+
+|  |
+| --- |
+| #property description "The indicator highlights the candlesticks that are local"  #property description "highs and lows. Interval length for finding"  #property description "extreme values should be found using an input parameters."  //--- indicator settings  #property indicator\_chart\_window  #property indicator\_buffers 5  #property indicator\_plots   1  //---- plot  #property indicator\_label1  "Extremums"  #property indicator\_type1   DRAW\_COLOR\_CANDLES  #property indicator\_color1  clrLightSteelBlue,clrRed,clrBlue  #property indicator\_style1  STYLE\_SOLID  #property indicator\_width1  1  //--- predefined constant  #define INDICATOR\_EMPTY\_VALUE 0.0  //--- input parameters  input int InpNum=4; // Half-interval length  //--- indicator buffers  double ExtOpen[];  double ExtHigh[];  double ExtLow[];  double ExtClose[];  double ExtColor[];  //--- global variables  int    ExtStart=0; // index of the first candlestick that is not an extremum  int    ExtCount=0; // number of non-extremums in the interval  //+------------------------------------------------------------------+  //| Filling out non-extremum candlesticks                            |  //+------------------------------------------------------------------+  void FillCandles(const double &open[],const double &high[],                   const double &low[],const double &close[])    {  //--- fill out the candlesticks     ArrayCopy(ExtOpen,open,ExtStart,ExtStart,ExtCount);     ArrayCopy(ExtHigh,high,ExtStart,ExtStart,ExtCount);     ArrayCopy(ExtLow,low,ExtStart,ExtStart,ExtCount);     ArrayCopy(ExtClose,close,ExtStart,ExtStart,ExtCount);    }  //+------------------------------------------------------------------+  //| Custom indicator initialization function                         |  //+------------------------------------------------------------------+  int OnInit()    {  //--- indicator buffers mapping     SetIndexBuffer(0,ExtOpen);     SetIndexBuffer(1,ExtHigh);     SetIndexBuffer(2,ExtLow);     SetIndexBuffer(3,ExtClose);     SetIndexBuffer(4,ExtColor,INDICATOR\_COLOR\_INDEX);  //--- specify the value, which is not displayed     PlotIndexSetDouble(0,PLOT\_EMPTY\_VALUE,INDICATOR\_EMPTY\_VALUE);  //--- specify the names of indicator buffers for displaying in the data window     PlotIndexSetString(0,PLOT\_LABEL,"Open;High;Low;Close");  //---     return(INIT\_SUCCEEDED);    }  //+------------------------------------------------------------------+  //| Custom indicator iteration function                              |  //+------------------------------------------------------------------+  int OnCalculate(const int rates\_total,                  const int prev\_calculated,                  const datetime &time[],                  const double &open[],                  const double &high[],                  const double &low[],                  const double &close[],                  const long &tick\_volume[],                  const long &volume[],                  const int &spread[])    {  //--- set straight indexing in time series     ArraySetAsSeries(open,false);     ArraySetAsSeries(high,false);     ArraySetAsSeries(low,false);     ArraySetAsSeries(close,false);  //--- variable of the bar calculation start     int start=prev\_calculated;  //--- calculation is not performed for the first InpNum\*2 bars     if(start==0)       {        start+=InpNum\*2;        ExtStart=0;        ExtCount=0;       }  //--- if the bar has just formed, check the next potential extremum     if(rates\_total-start==1)        start--;  //--- bar index to be checked for the extremum     int ext;  //--- indicator value calculation loop     for(int i=start;i<rates\_total-1;i++)       {        //--- initially on i bar without drawing        ExtOpen[i]=0;        ExtHigh[i]=0;        ExtLow[i]=0;        ExtClose[i]=0;        //--- extremum index for check        ext=i-InpNum;        //--- check for the local maximum        if(IsMax(high,ext))          {           //--- highlight an extremum candlestick           ExtOpen[ext]=open[ext];           ExtHigh[ext]=high[ext];           ExtLow[ext]=low[ext];           ExtClose[ext]=close[ext];           ExtColor[ext]=1;           //--- highlight other candles up to the extremum with a neutral color           FillCandles(open,high,low,close);           //--- change the variable colors           ExtStart=ext+1;           ExtCount=0;           //--- pass to the next iteration           continue;          }        //--- check for the local minimum        if(IsMin(low,ext))          {           //--- highlight an extremum candlestick           ExtOpen[ext]=open[ext];           ExtHigh[ext]=high[ext];           ExtLow[ext]=low[ext];           ExtClose[ext]=close[ext];           ExtColor[ext]=2;           //--- highlight other candles up to the extremum with a neutral color           FillCandles(open,high,low,close);           //--- change variable values           ExtStart=ext+1;           ExtCount=0;           //--- pass to the next iteration           continue;          }        //--- increase the number of non-extremums at the interval        ExtCount++;       }  //--- return value of prev\_calculated for next call     return(rates\_total);    }  //+------------------------------------------------------------------+  //| Check if the current array element is a local high               |  //+------------------------------------------------------------------+  bool IsMax(const double &price[],const int ind)    {  //--- interval start variable     int i=ind-InpNum;  //--- interval end period     int finish=ind+InpNum+1;  //--- check for the first half of the interval     for(;i<ind;i++)       {        if(price[ind]<=price[i])           return(false);       }  //--- check for the second half of the interval     for(i=ind+1;i<finish;i++)       {        if(price[ind]<=price[i])           return(false);       }  //--- this is an extremum     return(true);    }  //+------------------------------------------------------------------+  //| Check if the current array element is a local low                |  //+------------------------------------------------------------------+  bool IsMin(const double &price[],const int ind)    {  //--- interval start variable     int i=ind-InpNum;  //--- interval end variable     int finish=ind+InpNum+1;  //--- check for the first half of the interval     for(;i<ind;i++)       {        if(price[ind]>=price[i])           return(false);       }  //--- check for the second half of the interval     for(i=ind+1;i<finish;i++)       {        if(price[ind]>=price[i])           return(false);       }  //--- this is an extremum     return(true);    } |

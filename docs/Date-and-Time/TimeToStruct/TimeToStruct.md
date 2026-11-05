@@ -1,0 +1,29 @@
+# TimeToStruct
+
+TimeToStruct
+
+Converts a value of datetime type (number of seconds since 01.01.1970) into a structure variable [MqlDateTime](../../Constants,-Enumerations-and-Structures/Data-Structures/Date-Type-Structure/Date-Type-Structure.md).
+
+|  |
+| --- |
+| bool  TimeToStruct(     datetime      dt,            // date and time     MqlDateTime&  dt\_struct      // structure for the adoption of values     ); |
+
+Parameters
+
+dt
+
+[in]  Date value to convert.
+
+dt\_struct
+
+[out]  Variable of structure type MqlDateTime.
+
+Return Value
+
+True if successful, otherwise false. To get information about the error, call the [GetLastError()](../../Checkup/GetLastError/GetLastError.md) function.
+
+Example:
+
+|  |
+| --- |
+| void OnStart()    {  //--- get the last known time of the server, declare the date/time structure and fill in the structure fields     datetime    time=TimeCurrent();     MqlDateTime tm  ={};     if(!TimeToStruct(time,tm))        Print("TimeToStruct() failed. Error ", GetLastError());       //--- display the obtained server time and the result of filling the MqlDateTime structure using TimeToStruct() in the log     PrintFormat("Server time: %s\n- Year: %u\n- Month: %02u\n- Day: %02u\n- Hour: %02u\n- Min: %02u\n- Sec: %02u\n- Day of Year: %03u\n- Day of Week: %u (%s)",                 (string)time, tm.year, tm.mon, tm.day, tm.hour, tm.min, tm.sec, tm.day\_of\_year, tm.day\_of\_week, EnumToString((ENUM\_DAY\_OF\_WEEK)tm.day\_of\_week));     /\*     result:     Server time: 2024.04.18 15:47:27     - Year: 2024     - Month: 04     - Day: 18     - Hour: 15     - Min: 47     - Sec: 27     - Day of Year: 108     - Day of Week: 4 (THURSDAY)     \*/    } |

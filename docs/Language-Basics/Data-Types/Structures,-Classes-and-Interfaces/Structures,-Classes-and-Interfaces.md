@@ -1,0 +1,454 @@
+# Structures, Classes and Interfaces
+
+Structures, Classes and Interfaces
+
+Structures
+
+A structure is a set of elements of any type (except for the [void](../Void-Type-and-NULL-Constant/Void-Type-and-NULL-Constant.md) type). Thus, the structure combines logically related data of different types.
+
+Structure Declaration
+
+The structure data type is determined by the following description:
+
+|  |
+| --- |
+| struct structure\_name    {     elements\_description    }; |
+
+The structure name can't be used as an identifier (name of a variable or function). It should be noted that in MQL5 structure elements follow one another directly, without alignment. In C++ such an order is made to the compiler using the following instruction:
+
+|  |
+| --- |
+| #pragma pack(1) |
+
+If you want to do another alignment in the structure, use auxiliary members, "fillers" to the right size.
+
+Example:
+
+|  |
+| --- |
+| struct trade\_settings    {     uchar  slippage;     // value of the permissible slippage-size 1 byte     char   reserved1;    // skip 1 byte     short  reserved2;    // skip 2 bytes     int    reserved4;    // another 4 bytes are skipped. ensure alignment of the boundary 8 bytes     double take;         // values of the price of profit fixing     double stop;         // price value of the protective stop    }; |
+
+Such a description of aligned structures is necessary only for transferring to imported dll-functions.
+
+Attention: This example illustrates incorrectly designed data. It would be better first to declare the take and stop large data of the [double](../Real-Types-(double,-float)/Real-Types-(double,-float).md) type, and then declare the slippage member of the uchar type. In this case, the internal representation of data will always be the same regardless of the value specified in #pragma pack().
+
+If a structure contains variables of the [string](../String-Type/String-Type.md) type and/or [object of a dynamic array](../Dynamic-Array-Object/Dynamic-Array-Object.md), the compiler assigns an implicit constructor to such a structure. This constructor resets all the structure members of string type and correctly initializes objects of the dynamic array.
+
+Simple Structures
+
+Structures that do not contain strings, class objects, pointers and objects of dynamic arrays are called simple structures. Variables of simple structures, as well as their arrays can be passed as parameters to functions [imported](../../Preprocessor/Importing-Functions-(#import)/Importing-Functions-(#import).md) from DLL.
+
+Copying of simple structures is allowed only in two cases:
+
+- If the objects belong to the same structure type
+- if the objects are connected by the lineage meaning that one structure is a descendant of another.
+
+To provide an example, let's develop the CustomMqlTick custom structure with its contents identical to the built-in [MqlTick](../References-Modifier-&-and-Keyword-this/References-Modifier-&-and-Keyword-this.md) one. The compiler does not allow copying the MqlTick object value to the CustomMqlTick type object. [Direct typecasting](../Typecasting/Typecasting.md) to the necessary type also causes the compilation error:
+
+|  |
+| --- |
+| //--- copying simple structures of different types is forbidden        my\_tick1=last\_tick;               // compiler returns an error here               //--- typecasting structures of different types to each other is forbidden as well        my\_tick1=(CustomMqlTick)last\_tick;// compiler returns an error here |
+
+Therefore, only one option is left – copying the values of the structure elements one by one. It is still allowed to copy the values of the same type of CustomMqlTick.
+
+|  |
+| --- |
+| CustomMqlTick my\_tick1,my\_tick2;        //--- it is allowed to copy the objects of the same type of CustomMqlTick the following way        my\_tick2=my\_tick1;               //--- create an array out of the objects of the simple CustomMqlTick structure and write values to it        CustomMqlTick arr[2];        arr[0]=my\_tick1;        arr[1]=my\_tick2; |
+
+The [ArrayPrint()](../../../Array-Functions/ArrayPrint/ArrayPrint.md) function is called for a check to display the arr[] array value in the journal.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- develop the structure similar to the built-in MqlTick     struct CustomMqlTick       {        datetime          time;          // Last price update time        double            bid;           // Current Bid price        double            ask;           // Current Ask price        double            last;          // Current price of the last trade (Last)        ulong             volume;        // Volume for the current Last price        long              time\_msc;      // Last price update time in milliseconds        uint              flags;         // Tick flags            };     //--- get the last tick value     MqlTick last\_tick;     CustomMqlTick my\_tick1,my\_tick2;  //--- attempt to copy data from MqlTick to CustomMqlTick     if(SymbolInfoTick(Symbol(),last\_tick))       {        //--- copying unrelated simple structures is forbidden        //1. my\_tick1=last\_tick;               // compiler returns an error here               //--- typecasting unrelated structures to each other is forbidden as well        //2. my\_tick1=(CustomMqlTick)last\_tick;// compiler returns an error here               //--- therefore, copy the structure members one by one             my\_tick1.time=last\_tick.time;        my\_tick1.bid=last\_tick.bid;        my\_tick1.ask=last\_tick.ask;        my\_tick1.volume=last\_tick.volume;        my\_tick1.time\_msc=last\_tick.time\_msc;        my\_tick1.flags=last\_tick.flags;               //--- it is allowed to copy the objects of the same type of CustomMqlTick the following way        my\_tick2=my\_tick1;               //--- create an array out of the objects of the simple CustomMqlTick structure and write values to it        CustomMqlTick arr[2];        arr[0]=my\_tick1;        arr[1]=my\_tick2;        ArrayPrint(arr);  //--- example of displaying values of the array containing the objects of CustomMqlTick type        /\*                         [time]   [bid]   [ask]   [last] [volume]    [time\_msc] [flags]        [0] 2017.05.29 15:04:37 1.11854 1.11863 +0.00000  1450000 1496070277157       2        [1] 2017.05.29 15:04:37 1.11854 1.11863 +0.00000  1450000 1496070277157       2                   \*/       }     else        Print("SymbolInfoTick() failed, error = ",GetLastError());    } |
+
+The second example shows the features of copying simple structures by the lineage. Suppose that we have the Animal basic structure, from which the Cat and Dog structures are derived. We can copy the Animal and Cat objects, as well as the Animal and Dog objects to each other but we cannot copy Cat and Dog to each other, although both are descendants of the Animal structure.
+
+|  |
+| --- |
+| //--- structure for describing dogs  struct Dog: Animal    {     bool              hunting;       // hunting breed    };  //--- structure for describing cats  struct Cat: Animal    {     bool              home;          // home breed    };  //--- create objects of child structures     Dog dog;     Cat cat;  //--- can be copied from ancestor to descendant (Animal ==> Dog)     dog=some\_animal;     dog.swim=true;    // dogs can swim  //--- you cannot copy objects of child structures (Dog != Cat)     cat=dog;        // compiler returns an error |
+
+Complete example code:
+
+|  |
+| --- |
+| //--- basic structure for describing animals  struct Animal    {     int               head;          // number of heads     int               legs;          // number of legs     int               wings;         // number of wings     bool              tail;          // tail     bool              fly;           // flying     bool              swim;          // swimming       bool              run;           // running    };  //--- structure for describing dogs  struct Dog: Animal    {     bool              hunting;       // hunting breed    };  //--- structure for describing cats  struct Cat: Animal    {     bool              home;          // home breed    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- create and describe an object of the basic Animal type     Animal some\_animal;     some\_animal.head=1;     some\_animal.legs=4;     some\_animal.wings=0;     some\_animal.tail=true;     some\_animal.fly=false;     some\_animal.swim=false;     some\_animal.run=true;  //--- create objects of child types     Dog dog;     Cat cat;  //--- can be copied from ancestor to descendant (Animal ==> Dog)     dog=some\_animal;     dog.swim=true;    // dogs can swim  //--- you cannot copy objects of child structures (Dog != Cat)     //cat=dog;        // compiler returns an error here  //--- therefore, it is possible to copy elements one by one only     cat.head=dog.head;     cat.legs=dog.legs;     cat.wings=dog.wings;     cat.tail=dog.tail;     cat.fly=dog.fly;     cat.swim=false;   // cats cannot swim  //--- it is possible to copy the values from descendant to ancestor     Animal elephant;     elephant=cat;     elephant.run=false;// elephants cannot run     elephant.swim=true;// elephants can swim  //--- create an array     Animal animals[4];     animals[0]=some\_animal;     animals[1]=dog;       animals[2]=cat;     animals[3]=elephant;  //--- print out     ArrayPrint(animals);  //--- execution result  /\*         [head] [legs] [wings] [tail] [fly] [swim] [run]     [0]      1      4       0   true false  false  true     [1]      1      4       0   true false   true  true     [2]      1      4       0   true false  false false     [3]      1      4       0   true false   true false  \*/      } |
+
+Another way to copy simple types is using a union. The objects of the structures should be members of the same union – see the example in [union](Structures,-Classes-and-Interfaces.md#union).
+
+Access to Structure Members
+
+The name of a structure becomes a new data type, so you can declare variables of this type. The structure can be declared only once within a project. The structure members are accessed using the[point operation](../../Operations-and-Expressions/Other-Operations/Other-Operations.md#operation_dot) (.).
+
+Example:
+
+|  |
+| --- |
+| struct trade\_settings    {     double take;         // values of the profit fixing price     double stop;         // value of the protective stop price     uchar  slippage;     // value of the acceptable slippage    };  //--- create up and initialize a variable of the trade\_settings type  trade\_settings my\_set={0.0,0.0,5};    if (input\_TP>0) my\_set.take=input\_TP; |
+
+'pack' for aligning structure and class fields
+
+The special pack attribute allows setting the alignment of structure or class fields.
+
+|  |
+| --- |
+| pack([n]) |
+
+where n is one of the following values: 1, 2, 4, 8 or 16. It may be absent.
+
+Example:
+
+|  |
+| --- |
+| struct pack(sizeof(long)) MyStruct       {        // structure members are to be aligned to the 8-byte boundary       };  or     struct MyStruct pack(sizeof(long))       {        // structure members are to be aligned to the 8-byte boundary       }; |
+
+'pack(1)' is applied by default for structures. This means that the structure members are located one after another in memory, and the structure size is equal to the sum of its members' size.
+
+Example:
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- simple structure with no alignment     struct Simple\_Structure       {        char              c; // sizeof(char)=1        short             s; // sizeof(short)=2        int               i; // sizeof(int)=4        double            d; // sizeof(double)=8       };     //--- declare a simple structure instance        Simple\_Structure s;    //--- display the size of each structure member       Print("sizeof(s.c)=",sizeof(s.c));     Print("sizeof(s.s)=",sizeof(s.s));     Print("sizeof(s.i)=",sizeof(s.i));     Print("sizeof(s.d)=",sizeof(s.d));  //--- make sure the size of POD structure is equal to the sum of its members' size     Print("sizeof(simple\_structure)=",sizeof(simple\_structure));  /\*    Result:     sizeof(s.c)=1     sizeof(s.s)=2     sizeof(s.i)=4     sizeof(s.d)=8     sizeof(simple\_structure)=15   \*/        } |
+
+Alignment of the structure fields may be needed when exchanging data with third-party libraries (\*.DLL) where such alignment is applied.
+
+Let's use some examples to show how alignment works. We will apply a structure consisting of four members with no alignment.
+
+|  |
+| --- |
+| //--- simple structure with no alignment     struct Simple\_Structure pack() // no size is specified, alignment to the boundary of 1 byte is to be set       {        char              c; // sizeof(char)=1        short             s; // sizeof(short)=2        int               i; // sizeof(int)=4        double            d; // sizeof(double)=8       };  //--- declare a simple structure instance       Simple\_Structure s; |
+
+Structure fields are to be located in memory one after another according to the declaration order and [type size](../../Operations-and-Expressions/Other-Operations/Other-Operations.md#sizeof "sizeof"). The structure size is 15, while an offset to the structure fields in the arrays is undefined.
+
+![simple_structure_alignment](../../../assets/simple_structure_alignment.png)
+
+Now declare the same structure with the alignment of 4 bytes and run the code.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- simple structure with the 4-byte alignment     struct Simple\_Structure pack(4)       {        char              c; // sizeof(char)=1        short             s; // sizeof(short)=2        int               i; // sizeof(int)=4        double            d; // sizeof(double)=8       };     //--- declare a simple structure instance        Simple\_Structure s;    //--- display the size of each structure member       Print("sizeof(s.c)=",sizeof(s.c));     Print("sizeof(s.s)=",sizeof(s.s));     Print("sizeof(s.i)=",sizeof(s.i));     Print("sizeof(s.d)=",sizeof(s.d));  //--- make sure the size of POD structure is now not equal to the sum of its members' size     Print("sizeof(simple\_structure)=",sizeof(simple\_structure));  /\*    Result:     sizeof(s.c)=1     sizeof(s.s)=2     sizeof(s.i)=4     sizeof(s.d)=8     sizeof(simple\_structure)=16 // structure size has changed  \*/        } |
+
+The structure size has changed so that all members of 4 bytes and more has an offset from the beginning of the structure multiple of 4 bytes. Smaller members are to be aligned to their own size boundary (for example, 2 for 'short'). This is how it looks (the added byte is shown in gray).
+
+![simple_structure_alignment_pack](../../../assets/simple_structure_alignment_pack.png)
+
+In this case, 1 byte is added after the s.c member, so that the s.s (sizeof(short)==2) field has the boundary of 2 bytes (alignment for 'short' type).
+
+The offset to the beginning of the structure in the array is also aligned to the 4-byte boundary, i.e. the addresses of the a[0], a[1] and a[n] elements are to be multiple of 4 bytes for Simple\_Structure arr[].
+
+Let's consider two more structures consisting of similar types with 4-bytes alignment but different member order. In the first structure, the members are located in type size ascending order.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- simple structure aligned to the 4-byte boundary     struct CharShortInt pack(4)       {        char              c; // sizeof(char)=1        short             s; // sizeof(short)=2        int               i; // sizeof(double)=4       };  //--- declare a simple structure instance       CharShortInt ch\_sh\_in;  //--- display the size of each structure member       Print("sizeof(ch\_sh\_in.c)=",sizeof(ch\_sh\_in.c));     Print("sizeof(ch\_sh\_in.s)=",sizeof(ch\_sh\_in.s));     Print("sizeof(ch\_sh\_in.i)=",sizeof(ch\_sh\_in.i));     //--- make sure the size of POD structure is equal to the sum of its members' size     Print("sizeof(CharShortInt)=",sizeof(CharShortInt));  /\*    Result:     sizeof(ch\_sh\_in.c)=1     sizeof(ch\_sh\_in.s)=2     sizeof(ch\_sh\_in.i)=4     sizeof(CharShortInt)=8  \*/       } |
+
+As we can see, the structure size is 8 and consists of the two 4-byte blocks. The first block contains the fields with 'char' and 'short' types, while the second one contains the field with ['int'](../Integer-Types/Char,-Short,-Int-and-Long-Types/Char,-Short,-Int-and-Long-Types.md#int) type.
+
+![charshortint](../../../assets/charshortint.png)
+
+Now let's turn the first structure into the second one, which differs only in the field order, by moving the ['short'](../Integer-Types/Char,-Short,-Int-and-Long-Types/Char,-Short,-Int-and-Long-Types.md#short) type member to the end.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- simple structure aligned to the 4-byte boundary     struct CharIntShort pack(4)       {        char              c; // sizeof(char)=1        int               i; // sizeof(double)=4        short             s; // sizeof(short)=2       };  //--- declare a simple structure instance       CharIntShort ch\_in\_sh;  //--- display the size of each structure member       Print("sizeof(ch\_in\_sh.c)=",sizeof(ch\_in\_sh.c));     Print("sizeof(ch\_in\_sh.i)=",sizeof(ch\_in\_sh.i));     Print("sizeof(ch\_in\_sh.s)=",sizeof(ch\_in\_sh.s));  //--- make sure the size of POD structure is equal to the sum of its members' size     Print("sizeof(CharIntShort)=",sizeof(CharIntShort));  /\*    Result:     sizeof(ch\_in\_sh.c)=1     sizeof(ch\_in\_sh.i)=4     sizeof(ch\_in\_sh.s)=2     sizeof(CharIntShort)=12  \*/       } |
+
+Although the structure content has not changed, altering the member sequence has increased its size.
+
+![charintshort](../../../assets/charintshort.png)
+
+Alignment should also be considered when inheriting. Let's demonstrate this using the simple Parent structure having a single 'char' type member. The structure size without alignment is 1.
+
+|  |
+| --- |
+| struct Parent       {        char              c;    // sizeof(char)=1       }; |
+
+Let's create the Children child class featuring the 'short' (sizeof(short)=2) type member.
+
+|  |
+| --- |
+| struct Children pack(2) : Parent       {        short             s;   // sizeof(short)=2       }; |
+
+As a result, when setting alignment to 2 bytes, the structure size is equal to 4, although the size of its members is 3. In this example, 2 bytes are to be allocated to the Parent class, so that the access to the 'short' field of the child class is aligned to 2 bytes.
+
+The knowledge of how memory is allocated for the structure members is necessary if an MQL5 application interacts with third-party data by writing/reading on the files or streams level.
+
+The MQL5\Include\WinAPI directory of the [Standard Library](../../../Standard-Library/Standard-Library.md) contains the functions for working with the WinAPI functions. These functions apply the structures with a specified alignment for the cases when it is required for working with WinAPI.  
+
+offsetof is a special command directly related to the [pack](Structures,-Classes-and-Interfaces.md#pack) attribute. It allows us to obtain a member offset from the beginning of the structure.
+
+|  |
+| --- |
+| //--- declare the Children type variable     Children child;    //--- detect offsets from the beginning of the structure     Print("offsetof(Children,c)=",offsetof(Children,c));     Print("offsetof(Children,s)=",offsetof(Children,s));    /\*    Result:     offsetof(Children,c)=0     offsetof(Children,s)=2  \*/ |
+
+Specifier 'final'
+
+The use of the 'final' specifier during structure declaration prohibits further inheritance from this structure. If a structure requires no further modifications, or modifications are not allowed for security reasons, declare this structure with the 'final' modifier. In addition, all the members of the structure will also be implicitly considered final.
+
+|  |
+| --- |
+| struct settings final    {    //--- Structure body    };     struct trade\_settings : public settings    {    //--- Structure body    }; |
+
+If you try to inherit from a structure with the 'final' modifier as shown in the above example, the compiler will return an error:
+
+|  |
+| --- |
+| cannot inherit from 'settings' as it has been declared as 'final'  see declaration of 'settings' |
+
+Classes
+
+Classes differ from structures in the following:
+
+- the keyword class is used in declaration;
+
+- by default, all class members have access specifier private, unless otherwise indicated. Data-members of the structure have the default type of access as public, unless otherwise indicated;
+- class objects always have a table of [virtual functions](../../Object-Oriented-Programming/Virtual-Functions/Virtual-Functions.md), even if there are no virtual functions declared in the class. Structures cannot have virtual functions;
+
+- the [new](../../Operators/Object-Create-Operator-new/Object-Create-Operator-new.md) operator can be applied to class objects; this operator cannot be applied to structures;
+
+- classes can be [inherited](../../Object-Oriented-Programming/Inheritance/Inheritance.md) only from classes, structures can be inherited only from structures.
+
+Classes and structures can have an explicit constructor and destructor. If your constructor is explicitly defined, the initialization of a structure or class variable using the initializing sequence is impossible.
+
+Example:
+
+|  |
+| --- |
+| struct trade\_settings    {     double take;         // values of the profit fixing price     double stop;         // value of the protective stop price     uchar  slippage;     // value of the acceptable slippage     //--- Constructor            trade\_settings() { take=0.0; stop=0.0; slippage=5; }     //--- Destructor           ~trade\_settings() { Print("This is the end"); }     };  //--- Compiler will generate an error message that initialization is impossible  trade\_settings my\_set={0.0,0.0,5}; |
+
+Constructors and Destructors
+
+A constructor is a special function, which is called automatically when creating an object of a structure or class and is usually used to [initialize](../../Variables/Creating-and-Deleting-Objects/Creating-and-Deleting-Objects.md) class members. Further we will talk only about classes, while the same applies to structures, unless otherwise indicated. The name of a constructor must match the class name. The constructor has no return type (you can specify the [void](../Void-Type-and-NULL-Constant/Void-Type-and-NULL-Constant.md) type).
+
+Defined class members – [strings](../String-Type/String-Type.md), [dynamic arrays](../Dynamic-Array-Object/Dynamic-Array-Object.md) and objects that require initialization – will be in any case initialized, regardless of whether there is a constructor.
+
+Each class can have multiple constructors, differing by the number of parameters and the initialization list. A constructor that requires specifying parameters is called a parametric constructor.
+
+A constructor with no parameters is called a default constructor. If no constructors are declared in a class, the compiler creates a default constructor during compilation.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| A class for working with a date                                  |  //+------------------------------------------------------------------+  class MyDateClass    {  private:     int               m\_year;          // Year     int               m\_month;         // Month     int               m\_day;           // Day of the month     int               m\_hour;          // Hour in a day     int               m\_minute;        // Minutes     int               m\_second;        // Seconds  public:     //--- Default constructor                       MyDateClass(void);     //--- Parametric constructor                       MyDateClass(int h,int m,int s);    }; |
+
+ 
+
+A constructor can be declared in the class description and then its body can be defined. For example, two constructors of MyDateClass can be defined the following way:
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Default constructor                                              |  //+------------------------------------------------------------------+  MyDateClass::MyDateClass(void)    {  //---     MqlDateTime mdt;     datetime t=TimeCurrent(mdt);     m\_year=mdt.year;     m\_month=mdt.mon;     m\_day=mdt.day;     m\_hour=mdt.hour;     m\_minute=mdt.min;     m\_second=mdt.sec;     Print(\_\_FUNCTION\_\_);    }  //+------------------------------------------------------------------+  //| Parametric constructor                                           |  //+------------------------------------------------------------------+  MyDateClass::MyDateClass(int h,int m,int s)    {     MqlDateTime mdt;     datetime t=TimeCurrent(mdt);     m\_year=mdt.year;     m\_month=mdt.mon;     m\_day=mdt.day;     m\_hour=h;     m\_minute=m;     m\_second=s;     Print(\_\_FUNCTION\_\_);    } |
+
+In the [default constructor](Structures,-Classes-and-Interfaces.md#default_constructor), all members of the class are filled using the TimeCurrent() function. In the parametric constructor only hour values are filled in. Other members of the class (m\_year, m\_month and m\_day) will be automatically initialized with the current date.
+
+The default constructor has a special purpose when initializing an array of objects of its class. The constructor, all parameters of which have default values, is not a default constructor. Here is an example:
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| A class with a default constructor                               |  //+------------------------------------------------------------------+  class CFoo    {     datetime          m\_call\_time;     // Time of the last object call  public:     //--- Constructor with a parameter that has a default value is not a default constructor                       CFoo(const datetime t=0){m\_call\_time=t;};     //--- Copy constructor                       CFoo(const CFoo &foo){m\_call\_time=foo.m\_call\_time;};        string ToString(){return(TimeToString(m\_call\_time,TIME\_DATE|TIME\_SECONDS));};    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  // CFoo foo; // This variant cannot be used - a default constructor is not set  //--- Possible options to create the CFoo object     CFoo foo1(TimeCurrent());     // An explicit call of a parametric constructor     CFoo foo2();                  // An explicit call of a parametric constructor with a default parameter     CFoo foo3=D'2009.09.09';      // An implicit call of a parametric constructor     CFoo foo40(foo1);             // An explicit call of a copy constructor     CFoo foo41=foo1;              // An implicit call of a copy constructor     CFoo foo5;                    // An explicit call of a default constructor (if there is no default constructor,                                   // then a parametric constructor with a default value is called)  //--- Possible options to receive CFoo pointers     CFoo \*pfoo6=new CFoo();       // Dynamic creation of an object and receiving of a pointer to it     CFoo \*pfoo7=new CFoo(TimeCurrent());// Another option of dynamic object creation     CFoo \*pfoo8=GetPointer(foo1); // Now pfoo8 points to object foo1     CFoo \*pfoo9=pfoo7;            // pfoo9 and pfoo7 point to one and the same object     // CFoo foo\_array[3];         // This option cannot be used - a default constructor is not specified  //--- Show the value of m\_call\_time     Print("foo1.m\_call\_time=",foo1.ToString());     Print("foo2.m\_call\_time=",foo2.ToString());     Print("foo3.m\_call\_time=",foo3.ToString());     Print("foo4.m\_call\_time=",foo4.ToString());     Print("foo5.m\_call\_time=",foo5.ToString());     Print("pfoo6.m\_call\_time=",pfoo6.ToString());     Print("pfoo7.m\_call\_time=",pfoo7.ToString());     Print("pfoo8.m\_call\_time=",pfoo8.ToString());     Print("pfoo9.m\_call\_time=",pfoo9.ToString());  //--- Delete dynamically created arrays     delete pfoo6;     delete pfoo7;     //delete pfoo8;  // You do not need to delete pfoo8 explicitly, since it points to the automatically created object foo1     //delete pfoo9;  // You do not need to delete pfoo9 explicitly. since it points to the same object as pfoo7    } |
+
+If you uncomment these strings
+
+|  |
+| --- |
+| //CFoo foo\_array[3];     // This variant cannot be used - a default constructor is not set |
+
+or
+
+|  |
+| --- |
+| //CFoo foo\_dyn\_array[];  // This variant cannot be used - a default constructor is not set |
+
+then the compiler will return an error for them "default constructor is not defined".
+
+If a class has a user-defined constructor, the default constructor is not generated by the compiler. This means that if a parametric constructor is declared in a class, but a default constructor is not declared, you can not declare the arrays of objects of this class. The compiler will return an error for this script:
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| A class without a default constructor                            |  //+------------------------------------------------------------------+  class CFoo    {     string            m\_name;  public:                       CFoo(string name) { m\_name=name;}    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- Get the "default constructor is not defined" error during compilation     CFoo badFoo[5];    } |
+
+In this example, the CFoo class has a declared parametric constructor - in such cases, the compiler does not create a default constructor automatically during compilation. At the same time when you declare an array of objects, it is assumed that all objects should be [created and initialized automatically](../../Variables/Creating-and-Deleting-Objects/Creating-and-Deleting-Objects.md). During auto-initialization of an object, it is necessary to call a default constructor, but since the default constructor is not explicitly declared and not automatically generated by the compiler, it is impossible to create such an object. For this reason, the compiler generates an error at the compilation stage.
+
+There is a special syntax to initialize an object using a constructor. Constructor initializers (special constructions for initialization) for the members of a struct or class can be specified in the initialization list.
+
+An initialization list is a list of initializers separated by commas, which comes after the colon after the [list of parameters](../../Variables/Formal-Parameters/Formal-Parameters.md) of a constructor and precedes [the body](../../Functions/Functions.md#function_body) (goes before an opening brace). There are several requirements:
+
+- Initialization lists can be used only in [constructors](Structures,-Classes-and-Interfaces.md#constructor);
+- [Parent members](../../Object-Oriented-Programming/Inheritance/Inheritance.md) cannot be initialized in the initialization list;
+- The initialization list must be followed by a [definition](../../Functions/Functions.md#function_definition) (implementation) of a function.
+
+Here is an example of several constructors for initializing class members.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| A class for storing the name of a character                      |  //+------------------------------------------------------------------+  class CPerson    {     string            m\_first\_name;     // First name      string            m\_second\_name;    // Second name  public:     //--- An empty default constructor                       CPerson() {Print(\_\_FUNCTION\_\_);};     //--- A parametric constructor                       CPerson(string full\_name);     //--- A constructor with an initialization list                       CPerson(string surname,string name): m\_second\_name(surname), m\_first\_name(name) {};     void PrintName(){PrintFormat("Name=%s Surname=%s",m\_first\_name,m\_second\_name);};    };  //+------------------------------------------------------------------+  //|                                                                  |  //+------------------------------------------------------------------+  CPerson::CPerson(string full\_name)    {     int pos=StringFind(full\_name," ");     if(pos>=0)       {        m\_first\_name=StringSubstr(full\_name,0,pos);        m\_second\_name=StringSubstr(full\_name,pos+1);       }    }  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- Get an error "default constructor is not defined"     CPerson people[5];     CPerson Tom="Tom Sawyer";                       // Tom Sawyer     CPerson Huck("Huckleberry","Finn");             // Huckleberry Finn     CPerson \*Pooh = new CPerson("Winnie","Pooh");  // Winnie the Pooh     //--- Output values     Tom.PrintName();     Huck.PrintName();     Pooh.PrintName();          //--- Delete a dynamically created object     delete Pooh;    } |
+
+In this case, the CPerson class has three constructors:
+
+1. An explicit [default constructor](Structures,-Classes-and-Interfaces.md#default_constructor), which allows creating an array of objects of this class;
+2. A constructor with one parameter, which gets a full name as a parameter and divides it to the name and second name according to the found space;
+3. A constructor with two parameters that contains [an initialization list](Structures,-Classes-and-Interfaces.md#initialization_list). Initializers - m\_second\_name(surname) and m\_first\_name(name).
+
+Note that the initialization using a list has replaced an assignment. Individual members must be initialized as:
+
+|  |
+| --- |
+| class\_member (a list of expressions) |
+
+In the initialization list, members can go in any order, but all members of the class will be initialized according to the order of their announcement. This means that in the third constructor, first the m\_first\_name member will be initialized, as it is announced first, and only after it m\_second\_name is initialized. This should be taken into account in cases where the initialization of some members of the class depends on the values in other class members.
+
+If a default constructor is not declared in the base class, and at the same time one or more constructors with parameters are declared, you should always call one of the base class constructors in the initialization list. It goes through the comma as ordinary members of the list and will be called first during object initialization, no matter where in the initialization list it is located.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Base class                                                       |  //+------------------------------------------------------------------+  class CFoo    {     string            m\_name;  public:     //--- A constructor with an initialization list                       CFoo(string name) : m\_name(name) { Print(m\_name);}    };  //+------------------------------------------------------------------+  //| Class derived from CFoo                                          |  //+------------------------------------------------------------------+  class CBar : CFoo    {     CFoo              m\_member;      // A class member is an object of the parent  public:     //--- A default constructor in the initialization list calls the constructor of a parent                       CBar(): m\_member(\_Symbol), CFoo("CBAR") {Print(\_\_FUNCTION\_\_);}    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {     CBar bar;    } |
+
+In this example, when creating the bar object, a default constructor CBar() will be called, in which first a constructor for the parent CFoo is called, and then comes a constructor for the m\_member class member.
+
+A destructor is a special function that is called automatically when a class object is destroyed. The name of the destructor is written as a class name with a tilde (~). Strings, dynamic arrays and objects, requiring deinitialization, will be de-initialized anyway, regardless of the destructor presence or absence. If there is a destructor, these actions will be performed after calling the destructor.
+
+Destructors are always [virtual](../../Object-Oriented-Programming/Virtual-Functions/Virtual-Functions.md), regardless of whether they are declared with the virtual keyword or not.
+
+Defining Class Methods
+
+Class function-methods can be defined both inside the class and outside the class declaration. If the method is defined within a class, then its body comes right after the method declaration.
+
+Example:
+
+|  |
+| --- |
+| class CTetrisShape    {  protected:     int               m\_type;     int               m\_xpos;     int               m\_ypos;     int               m\_xsize;     int               m\_ysize;     int               m\_prev\_turn;     int               m\_turn;     int               m\_right\_border;  public:     void              CTetrisShape();     void              SetRightBorder(int border) { m\_right\_border=border; }     void              SetYPos(int ypos)          { m\_ypos=ypos;           }     void              SetXPos(int xpos)          { m\_xpos=xpos;           }     int               GetYPos()                  { return(m\_ypos);        }     int               GetXPos()                  { return(m\_xpos);        }     int               GetYSize()                 { return(m\_ysize);       }     int               GetXSize()                 { return(m\_xsize);       }     int               GetType()                  { return(m\_type);        }     void              Left()                     { m\_xpos-=SHAPE\_SIZE;    }     void              Right()                    { m\_xpos+=SHAPE\_SIZE;    }     void              Rotate()                   { m\_prev\_turn=m\_turn; if(++m\_turn>3) m\_turn=0; }     virtual void      Draw()                     { return;                }     virtual bool      CheckDown(int& pad\_array[]);     virtual bool      CheckLeft(int& side\_row[]);     virtual bool      CheckRight(int& side\_row[]);    }; |
+
+Functions from SetRightBorder(int border) to Draw() are declared and defined directly inside the CTetrisShape class.
+
+The CTetrisShape() constructor and methods CheckDown(int& pad\_array[]), CheckLeft(int& side\_row[]) and CheckRight(int& side\_row[]) are only declared inside the class, but not defined yet. Definitions of these functions will be further in the code. In order to define the method outside the class, the [scope resolution operator](../../Operations-and-Expressions/Other-Operations/Other-Operations.md#context_allow) is used, the class name is used as the scope.
+
+Example:
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Constructor of the basic class                                   |  //+------------------------------------------------------------------+  void CTetrisShape::CTetrisShape()    {     m\_type=0;     m\_ypos=0;     m\_xpos=0;     m\_xsize=SHAPE\_SIZE;     m\_ysize=SHAPE\_SIZE;     m\_prev\_turn=0;     m\_turn=0;     m\_right\_border=0;    }  //+------------------------------------------------------------------+  //| Checking ability to move down (for the stick and cube)           |  //+------------------------------------------------------------------+  bool CTetrisShape::CheckDown(int& pad\_array[])    {     int i,xsize=m\_xsize/SHAPE\_SIZE;  //---     for(i=0; i<xsize; i++)       {        if(m\_ypos+m\_ysize>=pad\_array[i]) return(false);       }  //---     return(true);    } |
+
+Public, Protected and Private Access Specifiers
+
+When developing a new class, it is recommended to restrict access to the members from the outside. For this purpose keywords private or protected are used. In this case, hidden data can be accessed only from function-methods of the same class. If the protected keyword is used, hidden data can be accessed also from methods of classes - [inheritors](../../Object-Oriented-Programming/Inheritance/Inheritance.md) of this class. The same method can be used to restrict the access to functions-methods of a class.
+
+If you need to completely open access to members and/or methods of a class, use the keyword public.
+
+Example:
+
+|  |
+| --- |
+| class CTetrisField    {  private:     int               m\_score;                            // Score     int               m\_ypos;                             // Current position of the figures     int               m\_field[FIELD\_HEIGHT][FIELD\_WIDTH]; // Matrix of the well     int               m\_rows[FIELD\_HEIGHT];               // Numbering of the well rows     int               m\_last\_row;                         // Last free row     CTetrisShape     \*m\_shape;                            // Tetris figure     bool              m\_bover;                            // Game over  public:     void              CTetrisField() { m\_shape=NULL; m\_bover=false; }     void              Init();     void              Deinit();     void              Down();     void              Left();     void              Right();     void              Rotate();     void              Drop();  private:     void              NewShape();     void              CheckAndDeleteRows();     void              LabelOver();    }; |
+
+Any class members and methods declared after the specifier public: (and before the next access specifier) are available in any reference to the class object by the program. In this example these are the following members: functions CTetrisField(), Init(), Deinit(), Down(), Left(), Right(), Rotate() and Drop().
+
+Any members that are declared after the access specifier to the elements private: (and before the next access specifier) are available only to members-functions of this class. Specifiers of access to elements always end with a colon (:) and can appear in the class definition many times.
+
+Any class members declared after the protected: access specifier (and up to the next access specifier) are available only to members-functions of this class and members-functions of the class [descendants](../../Object-Oriented-Programming/Inheritance/Inheritance.md). When attempting to refer to the members featuring the private and protected specifiers from the outside, we get the compilation stage error. Example:
+
+|  |
+| --- |
+| class A    {  protected:     //--- the copy operator is available only inside class A and its descendants     void operator=(const A &)       {       }    };  class B    {     //--- class A object declared     A                 a;    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {     //--- declare two B type variables     B b1, b2;     //--- attempt to copy one object into another     b2=b1;    } |
+
+When compiling the code, the error message is received — an attempt to call the remote copy operator:
+
+|  |
+| --- |
+| attempting to reference deleted function 'void B::operator=(const B&)'   trash3.mq5   32   6 |
+
+The second string below provides a more detailed description — the copy operator in class B was explicitly deleted, since the unavailable copy operator of class A is called:
+
+|  |
+| --- |
+| function 'void B::operator=(const B&)' was implicitly deleted because it invokes inaccessible function 'void A::operator=(const A&)' |
+
+Access to the members of the basis class can be redefined during [inheritance](../../Object-Oriented-Programming/Inheritance/Inheritance.md) in derived classes.
+
+'delete' specifier
+
+The delete specifier marks the class members-functions that cannot be used. This means if the program refers to such a function explicitly or implicitly, the error is received at the compilation stage already. For example, this specifier allows you to make parent methods unavailable in a child class. The same result can be achieved if we declare the function in the private area of the parent class (declarations in the private section). Here, using delete makes the code more readable and manageable at the level of descendants.
+
+|  |
+| --- |
+| class A    {  public:                       A(void) {value=5;};     double            GetValue(void) {return(value);}  private:     double            value;    };  class B: public A    {     double            GetValue(void)=delete;    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- declare the A type variable     A a;     Print("a.GetValue()=", a.GetValue());  //--- attempt to get value from the B type variable     B b;     Print("b.GetValue()=", b.GetValue()); // the compiler displays an error at this string    } |
+
+The compiler message:
+
+|  |
+| --- |
+| attempting to reference deleted function 'double B::GetValue()'        function 'double B::GetValue()' was explicitly deleted here |
+
+The 'delete' specifier allows disabling auto casting or the copy constructor, which otherwise would have to be hidden in the private section as well.  Example:
+
+|  |
+| --- |
+| class A    {  public:     void              SetValue(double v) {value=v;}     //--- disable int type call     void              SetValue(int) = delete;     //--- disable the copy operator     void              operator=(const A&) = delete;  private:     double            value;    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- declare two A type variables     A a1, a2;     a1.SetValue(3);      // error!     a1.SetValue(3.14);   // OK     a2=a1;               // error!    } |
+
+During the compilation, we get the error messages:
+
+|  |
+| --- |
+| attempting to reference deleted function 'void A::SetValue(int)'      function 'void A::SetValue(int)' was explicitly deleted here   attempting to reference deleted function 'void A::operator=(const A&)'       function 'void A::operator=(const A&)' was explicitly deleted here |
+
+Specifier 'final'
+
+The use of the 'final' specifier during class declaration prohibits further inheritance from this class. If the class interface requires no further modifications, or modifications are not allowed for security reasons, declare this class with the 'final' modifier. In addition, all the members of the class will also be implicitly considered final.
+
+|  |
+| --- |
+| class CFoo final    {    //--- Class body    };     class CBar : public CFoo    {    //--- Class body    }; |
+
+If you try to inherit form a class with the 'final' specifier as shown in the above example, the compiler will return an error:
+
+|  |
+| --- |
+| cannot inherit from 'CFoo' as it has been declared as 'final'  see declaration of 'CFoo' |
+
+Unions (union)
+
+Union is a special data type consisting of several variables sharing the same memory area. Therefore, the union provides the ability to interpret the same bit sequence in two (or more) different ways. Union declaration is similar to [structure](Structures,-Classes-and-Interfaces.md#simple_structure) declaration and starts with the [union](Structures,-Classes-and-Interfaces.md#union) keyword.
+
+|  |
+| --- |
+| union LongDouble  {    long   long\_value;    double double\_value;  }; |
+
+Unlike the structure, various union members belong to the same memory area. In this example, the union of LongDouble is declared with [long](../Integer-Types/Char,-Short,-Int-and-Long-Types/Char,-Short,-Int-and-Long-Types.md#long) and [double](../Real-Types-(double,-float)/Real-Types-(double,-float).md) type values sharing the same memory area. Please note that it is impossible to make the union store a long integer value and a double real value simultaneously (unlike a structure), since long\_value and double\_value variables overlap (in memory). On the other hand, an MQL5 program is able to process data containing in the union as an integer (long) or real (double) value at any time. Therefore, the union allows receiving two (or more) options for representing the same data sequence.
+
+During the union declaration, the compiler automatically allocates the memory area sufficient to store the [largest type](../../Operations-and-Expressions/Other-Operations/Other-Operations.md#sizeof) (by volume) in the variable union. The same syntax is used for accessing the union element as for the structures – [point operator](../../Operations-and-Expressions/Other-Operations/Other-Operations.md#operation_dot).
+
+|  |
+| --- |
+| union LongDouble  {    long   long\_value;    double double\_value;  };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //---     LongDouble lb;  //--- get and display the invalid -nan(ind) number     lb.double\_value=MathArcsin(2.0);     printf("1.  double=%f                integer=%I64X",lb.double\_value,lb.long\_value);  //--- largest normalized value (DBL\_MAX)     lb.long\_value=0x7FEFFFFFFFFFFFFF;     printf("2.  double=%.16e  integer=%I64X",lb.double\_value,lb.long\_value);  //--- smallest positive normalized (DBL\_MIN)     lb.long\_value=0x0010000000000000;         printf("3.  double=%.16e  integer=%.16I64X",lb.double\_value,lb.long\_value);    }  /\*  Execution result      1.  double=-nan(ind)                integer=FFF8000000000000      2.  double=1.7976931348623157e+308  integer=7FEFFFFFFFFFFFFF      3.  double=2.2250738585072014e-308  integer=0010000000000000  \*/ |
+
+Since the unions allow the program to interpret the same memory data in different ways, they are often used when an unusual [type conversion](../Typecasting/Typecasting.md) is required.
+
+The unions cannot be involved in the [inheritance](../../Object-Oriented-Programming/Inheritance/Inheritance.md), and they also cannot have [static members](../../Object-Oriented-Programming/Static-Members-of-a-Class/Static-Members-of-a-Class.md) due to their very nature. In all other aspects, the union behaves like a structure with all its members having a zero offset. The following types cannot be the union members:
+
+- [dynamic arrays](../Dynamic-Array-Object/Dynamic-Array-Object.md)
+- [strings](../String-Type/String-Type.md)
+- [pointers](../Object-Pointers/Object-Pointers.md) to objects and [functions](../User-defined-Types/User-defined-Types.md)
+- class objects
+- structure objects having constructors or destructors
+- structure objects having members from the points 1-5
+
+Similar to classes, the union is capable of having constructors and destructors, as well as methods. By default, the union members are of [public](Structures,-Classes-and-Interfaces.md#public) access type. In order to create private elements, use the [private](../../Variables/Variables.md#private) keyword. All these possibilities are displayed in the example illustrating how to convert a color of the [color](../Integer-Types/Color-Type/Color-Type.md) type to ARGB as does the [ColorToARGB()](../../../Conversion-Functions/ColorToARGB/ColorToARGB.md) function.
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //| Union for color(BGR) conversion to ARGB                          |  //+------------------------------------------------------------------+  union ARGB    {     uchar             argb[4];     color             clr;     //--- constructors                       ARGB(color col,uchar a=0){Color(col,a);};                      ~ARGB(){};     //--- public methods  public:     uchar   Alpha(){return(argb[3]);};     void    Alpha(const uchar alpha){argb[3]=alpha;};     color   Color(){ return(color(clr));};     //--- private methods  private:     //+------------------------------------------------------------------+     //| set the alpha channel value and color                            |     //+------------------------------------------------------------------+     void    Color(color col,uchar alpha)       {        //--- set color to clr member        clr=col;        //--- set the Alpha component value - opacity level        argb[3]=alpha;        //--- interchange the bytes of R and B components (Red and Blue)             uchar t=argb[0];argb[0]=argb[2];argb[2]=t;       };    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- 0x55 means 55/255=21.6 % (0% - fully transparent)     uchar alpha=0x55;   //--- color type is represented as 0x00BBGGRR     color test\_color=clrDarkOrange;  //--- values of bytes from the ARGB union are accepted here     uchar argb[];      PrintFormat("0x%.8X - here is how the 'color' type look like for %s, BGR=(%s)",                 test\_color,ColorToString(test\_color,true),ColorToString(test\_color));  //--- ARGB type is represented as 0x00RRGGBB, RR and BB components are swapped     ARGB argb\_color(test\_color);  //--- copy the bytes array     ArrayCopy(argb,argb\_color.argb);  //--- here is how it looks in ARGB representation       PrintFormat("0x%.8X - ARGB representation with the alpha channel=0x%.2x, ARGB=(%d,%d,%d,%d)",                 argb\_color.clr,argb\_color.Alpha(),argb[3],argb[2],argb[1],argb[0]);  //--- add opacity level     argb\_color.Alpha(alpha);  //--- try defining ARGB as 'color' type     Print("ARGB as color=(",argb\_color.clr,")  alpha channel=",argb\_color.Alpha());  //--- copy the bytes array     ArrayCopy(argb,argb\_color.argb);  //--- here is how it looks in ARGB representation     PrintFormat("0x%.8X - ARGB representation with the alpha channel=0x%.2x, ARGB=(%d,%d,%d,%d)",                 argb\_color.clr,argb\_color.Alpha(),argb[3],argb[2],argb[1],argb[0]);  //--- check with the ColorToARGB() function results     PrintFormat("0x%.8X - result of ColorToARGB(%s,0x%.2x)",ColorToARGB(test\_color,alpha),                 ColorToString(test\_color,true),alpha);    }  /\* Execution result     0x00008CFF - here is how the color type looks for clrDarkOrange, BGR=(255,140,0)     0x00FF8C00 - ARGB representation with the alpha channel=0x00, ARGB=(0,255,140,0)     ARGB as color=(0,140,255)  alpha channel=85     0x55FF8C00 - ARGB representation with the alpha channel=0x55, ARGB=(85,255,140,0)     0x55FF8C00 - result of ColorToARGB(clrDarkOrange,0x55)  \*/ |
+
+Interfaces
+
+An interface allows determining specific functionality, which a class can then implement. In fact, an interface is a class that cannot contain any members, and may not have a constructor and/or a destructor. All methods declared in an interface are purely virtual, even without an explicit definition.
+
+An interface is defined using the "interface" keyword. Example:
+
+|  |
+| --- |
+| //--- Basic interface for describing animals  interface IAnimal    {  //--- The methods of the interface have public access by default     void Sound();  // The sound produced by the animal    };  //+------------------------------------------------------------------+  //|  The CCat class is inherited from the IAnimal interface          |  //+------------------------------------------------------------------+  class CCat : public IAnimal    {  public:                       CCat() { Print("Cat was born"); }                      ~CCat() { Print("Cat is dead");  }     //--- Implementing the Sound method of the IAnimal interface     void Sound(){ Print("meou"); }    };  //+------------------------------------------------------------------+  //|  The CDog class is inherited from the IAnimal interface          |  //+------------------------------------------------------------------+  class CDog : public IAnimal    {  public:                       CDog() { Print("Dog was born"); }                      ~CDog() { Print("Dog is dead");  }     //--- Implementing the Sound method of the IAnimal interface     void Sound(){ Print("guaf"); }    };  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- An array of pointers to objects of the IAnimal type     IAnimal \*animals[2];  //--- Creating child classes of IAnimal and saving pointers to them into an array         animals[0]=new CCat;     animals[1]=new CDog;  //--- Calling the Sound() method of the basic IAnimal interface for each child       for(int i=0;i<ArraySize(animals);++i)        animals[i].Sound();  //--- Deleting objects     for(int i=0;i<ArraySize(animals);++i)        delete animals[i];  //--- Execution result  /\*     Cat was born     Dog was born     meou     guaf     Cat is dead     Dog is dead  \*/    } |
+
+Like with [abstract classes](../../Object-Oriented-Programming/Abstract-Classes/Abstract-Classes.md), an interface object cannot be created without inheritance. An interface can only be inherited from other interfaces and can be a parent for a class. An interface is always [publicly visible](../../Variables/Variables.md#public).
+
+An interface cannot be declared within a class or structure declaration, but a pointer to the interface can be saved in a variable of type [void \*](../Void-Type-and-NULL-Constant/Void-Type-and-NULL-Constant.md). Generally speaking, a pointer to an object of any class can be saved into a variable of type [void \*](../Void-Type-and-NULL-Constant/Void-Type-and-NULL-Constant.md). In order to convert a void \* pointer to a pointer to an object of a particular class, use the [dynamic\_cast](../Typecasting/Typecasting.md#dynamic_cast) operator. If conversion is not possible, the result of the dynamic\_cast operation will be [NULL](../Void-Type-and-NULL-Constant/Void-Type-and-NULL-Constant.md).
+
+See also
+
+[Object-Oriented Programming](../../Object-Oriented-Programming/Object-Oriented-Programming.md)

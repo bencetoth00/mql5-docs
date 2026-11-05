@@ -1,0 +1,49 @@
+# CS_ShapedMembershipFunction
+
+CS\_ShapedMembershipFunction
+
+Class for implementing an S-like membership function with the A and B parameters.  
+
+Description
+
+The function sets an S-like two-parameter membership function. This is a non-decreasing function that takes values from 0 to 1. The A and B parameters define the interval, within which the function increases in non-linear trajectory from 0 to 1.
+
+The function represents fuzzy sets of "very high" type (i.e. non-decreasing membership functions with saturation are set).
+
+![fuzzy_s_function](../../../../../assets/fuzzy_s_function.png)
+
+[A sample code](CS_ShapedMembershipFunction.md#sample) for plotting a chart is displayed below.
+
+Declaration
+
+|  |
+| --- |
+| class CS\_ShapedMembershipFuncion : public IMembershipFunction |
+
+Title
+
+|  |
+| --- |
+| #include <Math\Fuzzy\membershipfunction.mqh> |
+
+|  |
+| --- |
+| Inheritance hierarchy    [CObject](../../../../Basic-Class-CObject/Basic-Class-CObject.md)        [IMembershipFunction](../IMembershipFunction/IMembershipFunction.md)            CS\_ShapedMembershipFunction |
+
+Class methods
+
+| Class method | Description |
+| --- | --- |
+| [A](A/A.md) | Gets and sets the parameter of the increasing interval start. |
+| [B](B/B.md) | Gets and sets the first parameter of the fuzzy set core. |
+| [GetValue](GetValue/GetValue.md) | Calculates the value of the membership function by a specified argument. |
+
+|  |
+| --- |
+| Methods inherited from class CObject  Prev, Prev, Next, Next, [Save](../../../../Basic-Class-CObject/Save/Save.md), [Load](../../../../Basic-Class-CObject/Load/Load.md), [Type](../../../../Basic-Class-CObject/Type/Type.md), [Compare](../../../../Basic-Class-CObject/Compare/Compare.md) |
+
+Example
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //|                                   S\_ShapedMembershipFunction.mq5 |  //|                        Copyright 2016, MetaQuotes Software Corp. |  //|                                             https://www.mql5.com |  //+------------------------------------------------------------------+  #include <Math\Fuzzy\membershipfunction.mqh>  #include <Graphics\Graphic.mqh>  //--- Create membership functions  CS\_ShapedMembershipFunction func1(2,1);  CS\_ShapedMembershipFunction func2(2,4);  CS\_ShapedMembershipFunction func3(2,7);  //--- Create wrappers for membership functions  double S\_ShapedMembershipFunction1(double x) { return(func1.GetValue(x)); }  double S\_ShapedMembershipFunction2(double x) { return(func2.GetValue(x)); }  double S\_ShapedMembershipFunction3(double x) { return(func3.GetValue(x)); }  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {  //--- create graphic     CGraphic graphic;     if(!graphic.Create(0,"S\_ShapedMembershipFunction",0,30,30,780,380))       {        graphic.Attach(0,"S\_ShapedMembershipFunction");       }     graphic.HistoryNameWidth(70);     graphic.BackgroundMain("S\_ShapedMembershipFunction");     graphic.BackgroundMainSize(16);  //--- create curve     graphic.CurveAdd(S\_ShapedMembershipFunction1,0.0,10.0,0.1,CURVE\_LINES,"[2, 1]");     graphic.CurveAdd(S\_ShapedMembershipFunction2,0.0,10.0,0.1,CURVE\_LINES,"[2, 4]");     graphic.CurveAdd(S\_ShapedMembershipFunction3,0.0,10.0,0.1,CURVE\_LINES,"[2, 7]");  //--- sets the X-axis properties     graphic.XAxis().AutoScale(false);     graphic.XAxis().Min(0.0);     graphic.XAxis().Max(10.0);     graphic.XAxis().DefaultStep(1.0);  //--- sets the Y-axis properties     graphic.YAxis().AutoScale(false);     graphic.YAxis().Min(0.0);     graphic.YAxis().Max(1.1);     graphic.YAxis().DefaultStep(0.2);  //--- plot     graphic.CurvePlotAll();     graphic.Update();    } |

@@ -1,0 +1,33 @@
+# SocketCreate
+
+SocketCreate
+
+Create a socket with specified flags and return its handle.
+
+|  |
+| --- |
+| int  SocketCreate(     uint     flags         // flags     ); |
+
+Parameters
+
+flags
+
+[in]  Combination of flags defining the mode of working with a socket. Currently, only one flag is supported — SOCKET\_DEFAULT.
+
+Return Value
+
+In case of a successful socket creation, return its handle, otherwise [INVALID\_HANDLE](../../Constants,-Enumerations-and-Structures/Named-Constants/Other-Constants/Other-Constants.md).
+
+Notes
+
+To free up computer memory from an unused socket, call [SocketClose](../SocketClose/SocketClose.md) for it.
+
+You can create a maximum of 128 sockets from one MQL5 program. If the limit is exceeded, the error 5271 (ERR\_NETSOCKET\_TOO\_MANY\_OPENED) is written to [\_LastError](../../Predefined-Variables/_LastError/_LastError.md).
+
+The function can be called only from Expert Advisors and scripts, as they run in their own execution threads. If calling from an indicator, [GetLastError()](../../Checkup/GetLastError/GetLastError.md) returns the error 4014 – "Function is not allowed for call".
+
+Example:
+
+|  |
+| --- |
+| //+------------------------------------------------------------------+  //|                                                SocketExample.mq5 |  //|                        Copyright 2018, MetaQuotes Software Corp. |  //|                                             https://www.mql5.com |  //+------------------------------------------------------------------+  #property copyright   "Copyright 2000-2024, MetaQuotes Ltd."  #property link        "https://www.mql5.com"  #property version     "1.00"  #property description "Add Address to the list of allowed ones in the terminal settings to let the example work"  #property script\_show\_inputs     input string Address="www.mql5.com";  input int    Port   =80;  bool         ExtTLS =false;  //+------------------------------------------------------------------+  //| Send command to the server                                       |  //+------------------------------------------------------------------+  bool HTTPSend(int socket,string request)    {     char req[];     int  len=StringToCharArray(request,req)-1;     if(len<0)        return(false);  //--- if secure TLS connection is used via the port 443     if(ExtTLS)        return(SocketTlsSend(socket,req,len)==len);  //--- if standard TCP connection is used     return(SocketSend(socket,req,len)==len);    }  //+------------------------------------------------------------------+  //| Read server response                                             |  //+------------------------------------------------------------------+  bool HTTPRecv(int socket,uint timeout)    {     char   rsp[];     string result;     uint   timeout\_check=GetTickCount()+timeout;  //--- read data from sockets till they are still present but not longer than timeout     do       {        uint len=SocketIsReadable(socket);        if(len)          {           int rsp\_len;           //--- various reading commands depending on whether the connection is secure or not           if(ExtTLS)              rsp\_len=SocketTlsRead(socket,rsp,len);           else              rsp\_len=SocketRead(socket,rsp,len,timeout);           //--- analyze the response           if(rsp\_len>0)             {              result+=CharArrayToString(rsp,0,rsp\_len);              //--- print only the response header              int header\_end=StringFind(result,"\r\n\r\n");              if(header\_end>0)                {                 Print("HTTP answer header received:");                 Print(StringSubstr(result,0,header\_end));                 return(true);                }             }          }       }     while(GetTickCount()<timeout\_check && !IsStopped());     return(false);    }  //+------------------------------------------------------------------+  //| Script program start function                                    |  //+------------------------------------------------------------------+  void OnStart()    {     int socket=SocketCreate();  //--- check the handle     if(socket!=INVALID\_HANDLE)       {        //--- connect if all is well        if(SocketConnect(socket,Address,Port,1000))          {           Print("Established connection to ",Address,":",Port);              string   subject,issuer,serial,thumbprint;           datetime expiration;           //--- if connection is secured by the certificate, display its data           if(SocketTlsCertificate(socket,subject,issuer,serial,thumbprint,expiration))             {              Print("TLS certificate:");              Print("   Owner:  ",subject);              Print("   Issuer:  ",issuer);              Print("   Number:     ",serial);              Print("   Print: ",thumbprint);              Print("   Expiration: ",expiration);              ExtTLS=true;             }           //--- send GET request to the server           if(HTTPSend(socket,"GET / HTTP/1.1\r\nHost: www.mql5.com\r\nUser-Agent: MT5\r\n\r\n"))             {              Print("GET request sent");              //--- read the response              if(!HTTPRecv(socket,1000))                 Print("Failed to get a response, error ",GetLastError());             }           else              Print("Failed to send GET request, error ",GetLastError());          }        else          {           Print("Connection to ",Address,":",Port," failed, error ",GetLastError());          }        //--- close a socket after using        SocketClose(socket);       }     else        Print("Failed to create a socket, error ",GetLastError());    }  //+------------------------------------------------------------------+ |

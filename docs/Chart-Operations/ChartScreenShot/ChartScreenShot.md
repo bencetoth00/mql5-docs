@@ -1,0 +1,49 @@
+# ChartScreenShot
+
+ChartScreenShot
+
+The function provides a screenshot of the chart in its current state in the GIF, PNG or BMP format depending on specified extension.
+
+|  |
+| --- |
+| bool  ChartScreenShot(     long             chart\_id,                   // Chart ID     string           filename,                   // Symbol name     int              width,                      // Width     int              height,                     // Height     ENUM\_ALIGN\_MODE  align\_mode=ALIGN\_RIGHT      // Alignment type     ); |
+
+Parameters
+
+chart\_id
+
+[in]  Chart ID. 0 means the current chart.
+
+filename
+
+[in]  Screenshot file name. Cannot exceed 63 characters. Screenshot files are placed in the \Files directory.
+
+width
+
+[in]  Screenshot width in pixels.
+
+height
+
+[in]  Screenshot height in pixels.
+
+align\_mode=ALIGN\_RIGHT
+
+[in]  Output mode of a narrow screenshot. A value of the [ENUM\_ALIGN\_MODE](../../Constants,-Enumerations-and-Structures/Objects-Constants/Object-Properties/Object-Properties.md#enum_align_mode) enumeration. ALIGN\_RIGHT means align to the right margin (the output from the end). ALIGN\_LEFT means Left justify.
+
+Return Value
+
+Returns true if successful, otherwise false.
+
+Note
+
+If you need to take a screenshot from a chart from a certain position, first it's necessary to position the graph using the [ChartNavigate()](../ChartNavigate/ChartNavigate.md) function. If the horizontal size of the screenshot is smaller than the chart window, either the right part of the chart window, or its left part is output, depending on the align\_mode settings.
+
+Example:
+
+|  |
+| --- |
+| #property description "The Expert Advisor demonstrates how to create a series of screenshots of the current"  #property description "chart using the ChartScreenShot() function. For convenience, the file name is"  #property description "shown on the chart. The height and width of images is defined through macros."     #define        WIDTH  800     // Image width to call ChartScreenShot()  #define        HEIGHT 600     // Image height to call ChartScreenShot()     //--- input parameters  input int      pictures=5;    // The number of images in the series  int            mode=-1;       // -1 denotes a shift to the right edge of the chart, 1 - to the left  int            bars\_shift=300;// The number of bars when scrolling the chart using ChartNavigate()  //+------------------------------------------------------------------+  //| Expert initialization function                                   |  //+------------------------------------------------------------------+  void OnInit()    {  //--- Disable chart autoscroll     ChartSetInteger(0,CHART\_AUTOSCROLL,false);  //--- Set the shift of the right edge of the chart     ChartSetInteger(0,CHART\_SHIFT,true);  //--- Show a candlestick chart     ChartSetInteger(0,CHART\_MODE,CHART\_CANDLES);  //---     Print("Preparation of the Expert Advisor is completed");    }  //+------------------------------------------------------------------+  //| Expert tick function                                             |  //+------------------------------------------------------------------+  void OnTick()    {  //---       }  //+------------------------------------------------------------------+  //| ChartEvent function                                              |  //+------------------------------------------------------------------+  void OnChartEvent(const int id,                    const long &lparam,                    const double &dparam,                    const string &sparam)    {  //--- Show the name of the function, call time and event identifier     Print(\_\_FUNCTION\_\_,TimeCurrent(),"   id=",id,"   mode=",mode);  //--- Handle the CHARTEVENT\_CLICK event ("A mouse click on the chart")     if(id==CHARTEVENT\_CLICK)       {        //--- Initial shift from the chart edge        int pos=0;        //--- Operation with the left chart edge        if(mode>0)          {           //--- Scroll the chart to the left edge           ChartNavigate(0,CHART\_BEGIN,pos);           for(int i=0;i<pictures;i++)             {              //--- Prepare a text to show on the chart and a file name              string name="ChartScreenShot"+"CHART\_BEGIN"+string(pos)+".gif";              //--- Show the name on the chart as a comment              Comment(name);              //--- Save the chart screenshot in a file in the terminal\_directory\MQL5\Files\              if(ChartScreenShot(0,name,WIDTH,HEIGHT,ALIGN\_LEFT))                 Print("We've saved the screenshot ",name);              //---              pos+=bars\_shift;              //--- Give the user time to look at the new part of the chart              Sleep(3000);              //--- Scroll the chart from the current position bars\_shift bars to the right              ChartNavigate(0,CHART\_CURRENT\_POS,bars\_shift);             }           //--- Change the mode to the opposite           mode\*=-1;          }        else // Operation with the right chart edge          {           //--- Scroll the chart to the right edge           ChartNavigate(0,CHART\_END,pos);           for(int i=0;i<pictures;i++)             {              //--- Prepare a text to show on the chart and a file name              string name="ChartScreenShot"+"CHART\_END"+string(pos)+".gif";              //--- Show the name on the chart as a comment              Comment(name);              //--- Save the chart screenshot in a file in the terminal\_directory\MQL5\Files\              if(ChartScreenShot(0,name,WIDTH,HEIGHT,ALIGN\_RIGHT))                 Print("We've saved the screenshot ",name);              //---              pos+=bars\_shift;              //--- Give the user time to look at the new part of the chart              Sleep(3000);              //--- Scroll the chart from the current position bars\_shift bars to the right              ChartNavigate(0,CHART\_CURRENT\_POS,-bars\_shift);             }           //--- Change the mode to the opposite           mode\*=-1;          }       }  // End of CHARTEVENT\_CLICK event handling  //--- End of the OnChartEvent() handler      } |
+
+See also
+
+[ChartNavigate()](../ChartNavigate/ChartNavigate.md), [Resources](../../MQL5-programs/Resources/Resources.md)

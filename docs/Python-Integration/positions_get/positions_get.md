@@ -1,0 +1,63 @@
+# positions_get
+
+positions\_get
+
+Get open positions with the ability to filter by symbol or ticket. There are three call options.
+
+Call without parameters. Return open positions for all symbols.
+
+|  |
+| --- |
+| positions\_get() |
+
+Call specifying a symbol open positions should be received for.
+
+|  |
+| --- |
+| positions\_get(     symbol="SYMBOL"      // symbol name  ) |
+
+Call specifying a group of symbols open positions should be received for.
+
+|  |
+| --- |
+| positions\_get(     group="GROUP"        // filter for selecting positions by symbols  ) |
+
+Call specifying a position ticket.
+
+|  |
+| --- |
+| positions\_get(     ticket=TICKET        // ticket  ) |
+
+Parameters
+
+symbol="SYMBOL"
+
+[in]  Symbol name. Optional named parameter. If a symbol is specified, the ticket parameter is ignored.
+
+group="GROUP"
+
+[in]  The filter for arranging a group of necessary symbols. Optional named parameter. If the group is specified, the function returns only positions meeting a specified criteria for a symbol name.
+
+ticket=TICKET
+
+[in]  Position ticket ([POSITION\_TICKET](../../Constants,-Enumerations-and-Structures/Trade-Constants/Position-Properties/Position-Properties.md#enum_position_property_integer)). Optional named parameter.
+
+Return Value
+
+Return info in the form of a named tuple structure (namedtuple). Return None in case of an error. The info on the error can be obtained using [last\_error()](../last_error/last_error.md).
+
+Note
+
+The function allows receiving all open positions within one call similar to the [PositionsTotal](../../Trade-Functions/PositionsTotal/PositionsTotal.md) and [PositionSelect](../../Trade-Functions/PositionSelect/PositionSelect.md) tandem.
+
+The group parameter may contain several comma separated conditions. A condition can be set as a mask using '\*'. The logical negation symbol '!' can be used for an exclusion. All conditions are applied sequentially, which means conditions of including to a group should be specified first followed by an exclusion condition. For example, group="\*, !EUR" means that positions for all symbols should be selected first and the ones containing "EUR" in symbol names should be excluded afterwards.
+
+Example:
+
+|  |
+| --- |
+| import MetaTrader5 as mt5  import pandas as pd  pd.set\_option('display.max\_columns', 500) # number of columns to be displayed  pd.set\_option('display.width', 1500)      # max table width to display  # display data on the MetaTrader 5 package  print("MetaTrader5 package author: ",mt5.\_\_author\_\_)  print("MetaTrader5 package version: ",mt5.\_\_version\_\_)  print()  # establish connection to the MetaTrader 5 terminal  if not mt5.initialize():      print("initialize() failed, error code =",mt5.last\_error())      quit()     # get open positions on USDCHF  positions=mt5.positions\_get(symbol="USDCHF")  if positions==None:      print("No positions on USDCHF, error code={}".format(mt5.last\_error()))  elif len(positions)>0:      print("Total positions on USDCHF =",len(positions))      # display all open positions      for position in positions:          print(position)     # get the list of positions on symbols whose names contain "\*USD\*"  usd\_positions=mt5.positions\_get(group="\*USD\*")  if usd\_positions==None:      print("No positions with group=\"\*USD\*\", error code={}".format(mt5.last\_error()))  elif len(usd\_positions)>0:      print("positions\_get(group=\"\*USD\*\")={}".format(len(usd\_positions)))      # display these positions as a table using pandas.DataFrame      df=pd.DataFrame(list(usd\_positions),columns=usd\_positions[0].\_asdict().keys())      df['time'] = pd.to\_datetime(df['time'], unit='s')      df.drop(['time\_update', 'time\_msc', 'time\_update\_msc', 'external\_id'], axis=1, inplace=True)      print(df)     # shut down connection to the MetaTrader 5 terminal  mt5.shutdown()        Result:  MetaTrader5 package author:  MetaQuotes Software Corp.  MetaTrader5 package version:  5.0.29     positions\_get(group="\*USD\*")=5        ticket                time  type  magic  identifier  reason  volume  price\_open       sl       tp  price\_current  swap  profit  symbol comment  0  548297723 2020-03-18 15:00:55     1      0   548297723       3    0.01     1.09301  1.11490  1.06236        1.10104 -0.10   -8.03  EURUSD          1  548655158 2020-03-18 20:31:26     0      0   548655158       3    0.01     1.08676  1.06107  1.12446        1.10099 -0.08   14.23  EURUSD          2  548663803 2020-03-18 20:40:04     0      0   548663803       3    0.01     1.08640  1.06351  1.11833        1.10099 -0.08   14.59  EURUSD          3  548847168 2020-03-19 01:10:05     0      0   548847168       3    0.01     1.09545  1.05524  1.15122        1.10099 -0.06    5.54  EURUSD          4  548847194 2020-03-19 01:10:07     0      0   548847194       3    0.02     1.09536  1.04478  1.16587        1.10099 -0.08   11.26  EURUSD |
+
+See also
+
+[positions\_total](../positions_total/positions_total.md), [orders\_get](../orders_get/orders_get.md)

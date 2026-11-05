@@ -1,0 +1,41 @@
+# TimeGMT
+
+TimeGMT
+
+Returns the GMT, which is calculated taking into account the DST switch by the local time on the computer where the client terminal is running. There are 2 variants of the function.
+
+Call without parameters
+
+|  |
+| --- |
+| datetime  TimeGMT(); |
+
+Call with MqlDateTime type parameter
+
+|  |
+| --- |
+| datetime  TimeGMT(     MqlDateTime&  dt\_struct      // Variable of structure type     ); |
+
+Parameters
+
+dt\_struct
+
+[out]  Variable of structure type [MqlDateTime](../../Constants,-Enumerations-and-Structures/Data-Structures/Date-Type-Structure/Date-Type-Structure.md).
+
+Return Value
+
+Value of [datetime](../../Language-Basics/Data-Types/Integer-Types/Datetime-Type/Datetime-Type.md) type
+
+Note
+
+If the MqlDateTime structure type variable has been passed as a parameter, it is filled accordingly.
+
+To arrange high-resolution counters and timers, use the [GetTickCount()](../../Common-Functions/GetTickCount/GetTickCount.md) function, which produces values in milliseconds.
+
+During testing in the strategy tester, TimeGMT() is always equal to [TimeTradeServer()](../TimeTradeServer/TimeTradeServer.md) simulated server time.
+
+Example:
+
+|  |
+| --- |
+| void OnStart()    {  //--- declare the MqlDateTime variable to be filled with date/time data and get the PC local time and GMT     MqlDateTime tm={};     datetime    time1=TimeLocal();            // first form of call: PC local time     datetime    time2=TimeGMT(tm);            // second form of call: GMT calculated from the PC local time with filling the MqlDateTime structure     int         shift=int(time1-time2)/3600;  // local time offset relative to GMT       //--- display local time and GMT with the data of the filled MqlDateTime structure in the log     PrintFormat("Time Local: %s\nTime GMT: %s\n- Year: %u\n- Month: %02u\n- Day: %02u\n"+                 "- Hour: %02u\n- Min: %02u\n- Sec: %02u\n- Day of Year: %03u\n- Day of Week: %u (%s)\nLocal time offset relative to GMT: %+d",                 (string)time1, (string)time2, tm.year, tm.mon, tm.day, tm.hour, tm.min, tm.sec, tm.day\_of\_year, tm.day\_of\_week,                 EnumToString((ENUM\_DAY\_OF\_WEEK)tm.day\_of\_week), shift);     /\*     result:     Time Local: 2024.04.18 19:37:23     Time GMT: 2024.04.18 12:37:23     - Year: 2024     - Month: 04     - Day: 18     - Hour: 12     - Min: 37     - Sec: 23     - Day of Year: 108     - Day of Week: 4 (THURSDAY)     Local time offset relative to GMT: +7     \*/    } |

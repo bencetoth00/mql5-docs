@@ -1,0 +1,27 @@
+# SetArgument
+
+SetArgument
+
+Sets a parameter for the OpenCL function at the specified index.
+
+|  |
+| --- |
+| template<typename T>  bool  SetArgument(     const int  kernel\_index,     // index of the kernel     const int  arg\_index,        // index of the function argument     T          value             // source code     ); |
+
+Parameters
+
+kernel\_index
+
+[in]  Index of the kernel object.
+
+arg\_index
+
+[in]  Index of the function argument.
+
+value
+
+[in]  The value of the function argument.
+
+Return Value
+
+In case of successful execution, returns true, otherwise - false.
