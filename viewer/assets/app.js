@@ -114,6 +114,7 @@ function toggleTreePath(item, children, toggle) {
     );
     const isExpanded = pathBranches.has(branch);
     branch.classList.toggle("collapsed", !isExpanded);
+    parentToggle?.classList.toggle("expanded", isExpanded);
     if (parentToggle) parentToggle.textContent = isExpanded ? "â–¾" : "â–¸";
   });
 }
@@ -133,6 +134,7 @@ function buildTree(items, host) {
       t.onclick = () => {
         const c = li.querySelector(":scope > .tree-children");
         toggleTreePath(li, c, t);
+        t.classList.toggle("expanded", !c.classList.contains("collapsed"));
         t.textContent = c.classList.contains("collapsed") ? "▸" : "▾";
       };
       row.append(t);
@@ -172,6 +174,7 @@ function setActiveTreePath(path) {
     children.classList.add("collapsed");
   });
   tree.querySelectorAll(".tree-toggle").forEach((toggle) => {
+    toggle.classList.remove("expanded");
     toggle.textContent = "";
   });
   tree.querySelectorAll(".tree-row").forEach((row) => row.classList.remove("active"));
@@ -188,6 +191,7 @@ function setActiveTreePath(path) {
     const children = item.querySelector(":scope > .tree-children");
     if (children) {
       children.classList.remove("collapsed");
+      item.querySelector(":scope > .tree-row > .tree-toggle").classList.add("expanded");
       item.querySelector(":scope > .tree-row > .tree-toggle").textContent = "";
     }
     item = item.parentElement.closest(".tree-item");
@@ -394,6 +398,51 @@ $("#themeToggle").addEventListener("click", () => {
   syncThemeToggle();
 });
 syncThemeToggle();
+
+const sidebarLayout = document.querySelector(".layout");
+const sidebarResize = $("#sidebarResize");
+const sidebarMinWidth = 292;
+const sidebarMaxWidth = 600;
+
+function setSidebarWidth(width) {
+  const maxWidth = Math.max(sidebarMinWidth, Math.min(sidebarMaxWidth, window.innerWidth - 420));
+  const clampedWidth = Math.max(sidebarMinWidth, Math.min(maxWidth, width));
+  sidebarLayout.style.setProperty("--sidebar-width", `${clampedWidth}px`);
+  sidebarResize.setAttribute("aria-valuemin", String(sidebarMinWidth));
+  sidebarResize.setAttribute("aria-valuemax", String(maxWidth));
+  sidebarResize.setAttribute("aria-valuenow", String(clampedWidth));
+  return clampedWidth;
+}
+
+const savedSidebarWidth = Number(localStorage.getItem("mql5-reference-sidebar-width"));
+setSidebarWidth(savedSidebarWidth >= sidebarMinWidth ? savedSidebarWidth : sidebarMinWidth);
+
+sidebarResize.addEventListener("pointerdown", (event) => {
+  if (window.matchMedia("(max-width: 850px)").matches) return;
+  event.preventDefault();
+  sidebarLayout.classList.add("is-resizing");
+  sidebarResize.setPointerCapture(event.pointerId);
+});
+sidebarResize.addEventListener("pointermove", (event) => {
+  if (!sidebarResize.hasPointerCapture(event.pointerId)) return;
+  setSidebarWidth(event.clientX);
+});
+sidebarResize.addEventListener("pointerup", (event) => {
+  if (!sidebarResize.hasPointerCapture(event.pointerId)) return;
+  sidebarResize.releasePointerCapture(event.pointerId);
+  sidebarLayout.classList.remove("is-resizing");
+  const width = getComputedStyle(sidebarLayout).getPropertyValue("--sidebar-width");
+  localStorage.setItem("mql5-reference-sidebar-width", parseFloat(width));
+});
+sidebarResize.addEventListener("keydown", (event) => {
+  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+  event.preventDefault();
+  const current = parseFloat(
+    getComputedStyle(sidebarLayout).getPropertyValue("--sidebar-width"),
+  );
+  const delta = event.key === "ArrowRight" ? 20 : -20;
+  localStorage.setItem("mql5-reference-sidebar-width", setSidebarWidth(current + delta));
+});
 
 $("#mobileMenu").onclick = () => $("#sidebar").classList.toggle("open");
 window.addEventListener("popstate", () =>

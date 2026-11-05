@@ -144,11 +144,13 @@ kbd {
   background: var(--code);
 }
 .layout {
+  --sidebar-width: 320px;
   display: grid;
-  grid-template-columns: 292px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-width) 6px minmax(0, 1fr);
   min-height: calc(100vh - 62px);
 }
 .sidebar {
+  min-width: 0;
   border-right: 1px solid var(--line);
   height: calc(100vh - 62px);
   position: sticky;
@@ -160,15 +162,31 @@ kbd {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-direction: column;
   color: #8a929d;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
   padding: 0 8px 12px;
 }
-.sidebar-head span {
-  margin-bottom: 12px;
+.sidebar-resize {
+  position: relative;
+  z-index: 3;
+  cursor: col-resize;
+  touch-action: none;
+}
+.sidebar-resize::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 2px;
+  background: transparent;
+}
+.sidebar-resize:hover::after,
+.sidebar-resize:focus-visible::after,
+.layout.is-resizing .sidebar-resize::after {
+  background: var(--accent);
 }
 .text-btn,
 .icon-btn {
@@ -188,6 +206,7 @@ kbd {
 }
 .tree-row {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: 6px;
   min-height: 29px;
@@ -210,19 +229,37 @@ kbd {
   color: #89929e;
   cursor: pointer;
   padding: 0;
-  font-size: 12px;
+  font-size: 0;
+  color: transparent;
+  position: relative;
+}
+.tree-toggle::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: auto;
+  color: #89929e;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.12s ease;
+}
+.tree-toggle.expanded::before {
+  transform: rotate(135deg);
 }
 .tree-link {
   color: inherit;
   text-decoration: none;
   flex: 1;
-  overflow-wrap: anywhere;
+  min-width: 0;
+  overflow-wrap: break-word;
   font-size: 12px;
 }
 .tree-children {
-  padding-left: 13px;
+  padding-left: 6px;
   border-left: 1px solid #edf0f3;
-  margin-left: 14px;
+  margin-left: 8px;
 }
 .tree-children.collapsed {
   display: none;
@@ -504,6 +541,9 @@ footer {
   }
   .layout {
     display: block;
+  }
+  .sidebar-resize {
+    display: none;
   }
   .sidebar {
     position: fixed;
