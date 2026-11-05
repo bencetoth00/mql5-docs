@@ -1,0 +1,16 @@
+# SessionClose
+
+
+Gets the close price of the current session.
+
+```cpp
+double  SessionClose() const
+```
+
+Return Value
+
+Close price of the current session.
+
+Note
+
+The symbol should be selected by [Name](../Name/Name.md) method.

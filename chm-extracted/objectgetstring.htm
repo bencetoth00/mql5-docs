@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+  <title>ObjectGetString</title>
+  <meta name="keywords" content="ObjectGetString" />
+  <link type="text/css" href="default.css" rel="stylesheet" />
+  <link type="text/css" href="screenshot.css" rel="stylesheet" />
+  
+
+   
+   
+   
+
+
+</head>
+
+<body style="background-color:#FFFFFF; font-family:'Trebuchet MS',Tahoma,Arial,Helvetica,sans-serif; margin:0px;">
+
+
+
+<table width="100%" height="49"  border="0" cellpadding="0" cellspacing="0" style="margin-top:0px; background-color:#1660af;">
+  <tr>
+    <td></td>
+    <td valign="middle">
+      <table style="margin-top:4px; margin-bottom:5px;" width="100%"  border="0" cellspacing="0" cellpadding="5">
+        <tr valign="middle">
+          <td class="nav">
+<a class="h_m" href="mql5_guide.htm">          MQL5 Reference </a> / <a class="h_m" href="objects.htm"> Object Functions </a>/ ObjectGetString
+          </td>
+          <td width="70" align="right">
+          <a href="objectgetinteger.htm"><img style="vertical-align:middle;" src="previous.png" alt="Previous" width="27" height="27" border=0></a>&nbsp;
+          <a href="textsetfont.htm"><img style="vertical-align:middle;" src="next.png" alt="Next" width="27" height="27" border="0"></a>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="5"></td>
+  </tr>
+</table>
+
+
+
+<div id="help">
+<p class="p_H1"><span class="f_H1">ObjectGetString</span></p>
+<p class="p_Function"><span class="f_Function">The function returns the value of the corresponding object property. The object property must be of the <a href="stringconst.htm" class="topiclink">string</a> type. There are 2 variants of the function.</span></p>
+<p class="p_Function"><span class="f_Function" style="font-weight: bold;">1. Immediately returns the property value.</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_Keywords">string&nbsp;&nbsp;</span><span class="f_Functions">ObjectGetString</span><span class="f_CodeExample">(</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">long</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">chart_id</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;chart&nbsp;identifier</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">string</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">name</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;object&nbsp;name</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">ENUM_OBJECT_PROPERTY_STRING</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">prop_id</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;property&nbsp;identifier</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">int</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">prop_modifier=0</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;property&nbsp;modifier,&nbsp;if&nbsp;required</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;);</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Function"><span class="f_Function" style="font-weight: bold;">2. Returns true or false, depending on the success of the function.</span><span class="f_Function"> If successful, the property value is placed to a receiving variable passed by reference by the last parameter.</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_Keywords">bool&nbsp;&nbsp;</span><span class="f_Functions">ObjectGetString</span><span class="f_CodeExample">(</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">long</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">chart_id</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;chart&nbsp;identifier</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">string</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">name</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;object&nbsp;name</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">ENUM_OBJECT_PROPERTY_STRING</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">prop_id</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;property&nbsp;identifier</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">int</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">prop_modifier</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;property&nbsp;modifier</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">string&amp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">string_var</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;here&nbsp;we&nbsp;accept&nbsp;the&nbsp;property&nbsp;value</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;);</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Parameters</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">chart_id</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Chart identifier. 0 means the current chart.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">name</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Name of the object.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">prop_id</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;ID of the object property. The value can be one of the values of the <a href="enum_object_property.htm#enum_object_property_string" class="topiclink">ENUM_OBJECT_PROPERTY_STRING</a> enumeration.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">prop_modifier</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Modifier of the specified property. For the first variant, the default modifier value is equal to 0. Most properties do not require a modifier. &nbsp;It denotes the number of the level in <a href="enum_object.htm" class="topiclink">Fibonacci tools</a> and in the graphical object Andrew's pitchfork. The numeration of levels starts from zero.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">string_var</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[out] &nbsp;Variable of the string type that receives the value of the requested properties.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Return Value</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">String value for the first version of the call.</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">For the second version of the call returns true, if this property is maintained and the value has been placed into the string_var variable, otherwise returns false. To read more about the <a href="errorcodes.htm" class="topiclink">error</a> call <a href="getlasterror.htm" class="topiclink">GetLastError()</a>.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Note</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">The function uses a synchronous call, which means that the function waits for the execution of all commands that have been enqueued for this chart prior to its call, that is why this function can be time consuming. This feature should be taken into account when working with a large number of objects on a chart.</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">When an object is renamed, two events are formed simultaneously. These events can be handled in an Expert Advisor or indicator by the <a href="onchartevent.htm" class="topiclink">OnChartEvent()</a> function:</span></p>
+<ul style="list-style-type:disc">
+<li class="p_FunctionRemLI"><span class="f_FunctionRemLI">an event of deletion of an object with the old name;</span></li>
+<li class="p_FunctionRemLI"><span class="f_FunctionRemLI">an event of creation of an object with a new name.</span></li>
+</ul>
+<p class="p_FunctionRemLI"><span class="f_FunctionRemLI">&nbsp;</span></p>
+<p class="p_Text"><span class="f_Text" style="font-weight: bold;">Example:</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="color: #0000ff;">#property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">copyright</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;Copyright&nbsp;2025,&nbsp;MetaQuotes&nbsp;Ltd.&quot;</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">#property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">link</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;https://www.mql5.com&quot;</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">#property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">version</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;1.00&quot;</span>
+<br><span class="f_CodeExample">&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">#define</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_NAME</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestObjectGetInteger&quot;</span><span class="f_CodeExample">&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #808080;">//&nbsp;Object&nbsp;name</span>
+<br><span class="f_CodeExample">&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//+------------------------------------------------------------------+</span>
+<br><span class="f_CodeExample" style="color: #808080;">//|&nbsp;Script&nbsp;program&nbsp;start&nbsp;function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<br><span class="f_CodeExample" style="color: #808080;">//+------------------------------------------------------------------+</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">void</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">OnStart</span><span class="f_CodeExample">()</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;current&nbsp;chart&nbsp;ID</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">long</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #0000ff;">ChartID</span><span class="f_CodeExample">();</span>
+<br><span class="f_CodeExample">&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;create&nbsp;a&nbsp;&quot;Vertical&nbsp;Line&quot;&nbsp;graphical&nbsp;object&nbsp;at&nbsp;the&nbsp;current&nbsp;known&nbsp;server&nbsp;time</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">if</span><span class="f_CodeExample">(!</span><span class="f_CodeExample" style="color: #0000ff;">ObjectCreate</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_NAME</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_VLINE</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">TimeCurrent</span><span class="f_CodeExample">(),&nbsp;</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">))</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">Print</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #008080;">&quot;ObjectCreate()&nbsp;failed.&nbsp;Error&nbsp;&quot;</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GetLastError</span><span class="f_CodeExample">());</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">return</span><span class="f_CodeExample">;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;update&nbsp;the&nbsp;chart&nbsp;to&nbsp;immediately&nbsp;reflect&nbsp;the&nbsp;changes</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">ChartRedraw</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;get&nbsp;the&nbsp;object&nbsp;creation&nbsp;time</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">long</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">long_var</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">if</span><span class="f_CodeExample">(!</span><span class="f_CodeExample" style="color: #0000ff;">ObjectGetInteger</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_NAME</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJPROP_CREATETIME</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">long_var</span><span class="f_CodeExample">))</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">Print</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #008080;">&quot;ObjectGetInteger()&nbsp;failed.&nbsp;Error&nbsp;&quot;</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GetLastError</span><span class="f_CodeExample">());</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">return</span><span class="f_CodeExample">;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;object&nbsp;creation&nbsp;time</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">string</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">create_time</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #0000ff;">TimeToString</span><span class="f_CodeExample">((</span><span class="f_CodeExample" style="color: #0000ff;">datetime</span><span class="f_CodeExample">)</span><span class="f_CodeExample" style="color: #333333;">long_var</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">TIME_DATE</span><span class="f_CodeExample">|</span><span class="f_CodeExample" style="color: #ff0000;">TIME_MINUTES</span><span class="f_CodeExample">|</span><span class="f_CodeExample" style="color: #ff0000;">TIME_SECONDS</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;get&nbsp;the&nbsp;time&nbsp;set&nbsp;in&nbsp;the&nbsp;object</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">if</span><span class="f_CodeExample">(!</span><span class="f_CodeExample" style="color: #0000ff;">ObjectGetInteger</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_NAME</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJPROP_TIME</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">long_var</span><span class="f_CodeExample">))</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">Print</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #008080;">&quot;ObjectGetInteger()&nbsp;failed.&nbsp;Error&nbsp;&quot;</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GetLastError</span><span class="f_CodeExample">());</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">return</span><span class="f_CodeExample">;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;object&nbsp;location&nbsp;time</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">string</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">obj_time</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #0000ff;">TimeToString</span><span class="f_CodeExample">((</span><span class="f_CodeExample" style="color: #0000ff;">datetime</span><span class="f_CodeExample">)</span><span class="f_CodeExample" style="color: #333333;">long_var</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">TIME_DATE</span><span class="f_CodeExample">|</span><span class="f_CodeExample" style="color: #ff0000;">TIME_MINUTES</span><span class="f_CodeExample">|</span><span class="f_CodeExample" style="color: #ff0000;">TIME_SECONDS</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;get&nbsp;the&nbsp;object&nbsp;type</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">ENUM_OBJECT</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">object_type</span><span class="f_CodeExample">=(</span><span class="f_CodeExample" style="color: #ff0000;">ENUM_OBJECT</span><span class="f_CodeExample">)</span><span class="f_CodeExample" style="color: #0000ff;">ObjectGetInteger</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_NAME</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJPROP_TYPE</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;output&nbsp;to&nbsp;the&nbsp;journal&nbsp;the&nbsp;type&nbsp;of&nbsp;object,&nbsp;the&nbsp;time&nbsp;of&nbsp;its&nbsp;creation&nbsp;and&nbsp;the&nbsp;time&nbsp;on&nbsp;the&nbsp;chart&nbsp;the&nbsp;graphical&nbsp;object&nbsp;is&nbsp;located&nbsp;on</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">PrintFormat</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #008080;">&quot;%s&nbsp;object&nbsp;created&nbsp;at&nbsp;%s&nbsp;at&nbsp;chart&nbsp;point&nbsp;with&nbsp;time&nbsp;%s&quot;</span><span class="f_CodeExample">,</span><span class="f_CodeExample" style="color: #0000ff;">EnumToString</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">object_type</span><span class="f_CodeExample">),&nbsp;</span><span class="f_CodeExample" style="color: #333333;">create_time</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">obj_time</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;wait&nbsp;two&nbsp;seconds&nbsp;and&nbsp;delete&nbsp;the&nbsp;created&nbsp;object</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">Sleep</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">2000</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">ObjectDelete</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">OBJ_NAME</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">ChartRedraw</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">chart_id</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;/*</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;result:</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">OBJ_VLINE</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">object</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">created</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">at</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">2025</span><span class="f_CodeExample">.</span><span class="f_CodeExample" style="color: #333333;">02</span><span class="f_CodeExample">.</span><span class="f_CodeExample" style="color: #333333;">01</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">12</span><span class="f_CodeExample">:</span><span class="f_CodeExample" style="color: #333333;">15</span><span class="f_CodeExample">:</span><span class="f_CodeExample" style="color: #333333;">37</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">at</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">chart</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">point</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">with</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">time</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">2025</span><span class="f_CodeExample">.</span><span class="f_CodeExample" style="color: #333333;">01</span><span class="f_CodeExample">.</span><span class="f_CodeExample" style="color: #333333;">31</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">23</span><span class="f_CodeExample">:</span><span class="f_CodeExample" style="color: #333333;">54</span><span class="f_CodeExample">:</span><span class="f_CodeExample" style="color: #333333;">59</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;*/</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;}</span></p>
+</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</body>
+</html>

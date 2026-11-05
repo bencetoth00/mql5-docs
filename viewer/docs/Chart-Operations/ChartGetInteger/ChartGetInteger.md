@@ -1,0 +1,65 @@
+# ChartGetInteger
+
+
+Returns the value of a corresponding property of the specified chart. Chart property must be of [datetime, int or bool](../../Language-Basics/Data-Types/Integer-Types/Integer-Types.md) type. There are 2 variants of the function calls.
+
+1. Returns the property value directly.
+
+```cpp
+long  ChartGetInteger(
+   long                          chart_id,          // Chart ID
+   ENUM_CHART_PROPERTY_INTEGER   prop_id,           // Property ID
+   int                           sub_window=0       // subwindow number, if necessary
+   );
+```
+
+2. Returns true or false, depending on the success of a function. If successful, the value of the property is placed in a target variable long\_var passed by reference.
+
+```cpp
+bool  ChartGetInteger(
+   long                          chart_id,          // Chart ID
+   ENUM_CHART_PROPERTY_INTEGER   prop_id,           // Property ID
+   int                           sub_window=0       // subwindow number
+   long&                         long_var           // Target variable for the property
+   );
+```
+
+Parameters
+
+chart\_id
+
+[in]  Chart ID. 0 means the current chart.
+
+prop\_id
+
+[in]  Chart property ID. This value can be one of the [ENUM\_CHART\_PROPERTY\_INTEGER](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer) values.
+
+sub\_window
+
+[in]  Number of the chart subwindow. For the first case, the default value is 0 (main chart window). The most of the properties do not require a subwindow number.
+
+long\_var
+
+[out]  Target variable of long type for the requested property.
+
+Return Value
+
+The value of long type.
+
+For the second call case it returns true if specified property is available and its value has been stored into long\_var variable, otherwise returns false. To get additional information about the [error](../../Constants,-Enumerations-and-Structures/Codes-of-Errors-and-Warnings/Runtime-Errors/Runtime-Errors.md), it is necessary to call the function [GetLastError()](../../Checkup/GetLastError/GetLastError.md).
+
+Note
+
+The function is synchronous, which means that it waits for the execution of all the commands that have been added to the chart queue prior to its call.
+
+Example:
+
+```cpp
+void OnStart()
+  {
+   int height=ChartGetInteger(0,CHART_HEIGHT_IN_PIXELS,0);
+   int width=ChartGetInteger(0,CHART_WIDTH_IN_PIXELS,0);
+   Print("CHART_HEIGHT_IN_PIXELS =",height,"pixels");
+   Print("CHART_WIDTH_IN_PIXELS =",width,"pixels");
+  }
+```

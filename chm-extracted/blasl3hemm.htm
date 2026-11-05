@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+  <title>BlasL3HeMM</title>
+  <meta name="keywords" content="BlasL3HeMM" />
+  <link type="text/css" href="default.css" rel="stylesheet" />
+  <link type="text/css" href="screenshot.css" rel="stylesheet" />
+  
+
+   
+   
+   
+
+
+</head>
+
+<body style="background-color:#FFFFFF; font-family:'Trebuchet MS',Tahoma,Arial,Helvetica,sans-serif; margin:0px;">
+
+
+
+<table width="100%" height="49"  border="0" cellpadding="0" cellspacing="0" style="margin-top:0px; background-color:#1660af;">
+  <tr>
+    <td></td>
+    <td valign="middle">
+      <table style="margin-top:4px; margin-bottom:5px;" width="100%"  border="0" cellspacing="0" cellpadding="5">
+        <tr valign="middle">
+          <td class="nav">
+<a class="h_m" href="mql5_guide.htm">          MQL5 Reference </a> / <a class="h_m" href="matrix.htm"> Matrix and Vector Methods </a> / <a class="h_m" href="openblas.htm"> OpenBLAS </a> / <a class="h_m" href="blas_level3.htm"> BLAS Level 3 </a>/ BlasL3HeMM
+          </td>
+          <td width="70" align="right">
+          <a href="blasl3symm.htm"><img style="vertical-align:middle;" src="previous.png" alt="Previous" width="27" height="27" border=0></a>&nbsp;
+          <a href="blasl3trmm.htm"><img style="vertical-align:middle;" src="next.png" alt="Next" width="27" height="27" border="0"></a>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="5"></td>
+  </tr>
+</table>
+
+
+
+<div id="help">
+<p class="p_H1"><span class="f_H1">BlasL3HeMM</span></p>
+<p class="p_Function"><span class="f_Function">Computes a matrix-matrix product where the input matrix A is Hermitian.</span></p>
+<p class="p_Function"><span class="f_Function">C = alpha*A*B + beta*C &nbsp;or</span></p>
+<p class="p_Function"><span class="f_Function">C = alpha*B*A + beta*C,</span></p>
+<p class="p_Function"><span class="f_Function">where A is a Hermitian matrix of m-by-m size if side='L', or n-by-n size otherwise; B and C are m-by-n matrices.</span></p>
+<p class="p_Function"><span class="f_Function">BLAS function <a href="https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-fortran/2025-2/hemm.html" target="_blank" class="weblink">HEMM</a>.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Computing for type matrix&lt;complex&gt;</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_Keywords">bool&nbsp;&nbsp;matrix::</span><span class="f_Functions">BlasL3HeMM</span><span class="f_CodeExample">(</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">ENUM_BLAS_SIDE</span><span class="f_CodeExample">&nbsp;&nbsp;</span><span class="f_Param">side</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;specifies&nbsp;side&nbsp;of&nbsp;A&nbsp;in&nbsp;the&nbsp;product</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">complex&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">alpha</span><span class="f_CodeExample">,</span><span class="f_Param">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;scalar&nbsp;multiplier&nbsp;alpha</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">matrixc&amp;&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">B</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;matrix&nbsp;B</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">complex&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">beta</span><span class="f_CodeExample">,</span><span class="f_Param">&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;scalar&nbsp;multiplier&nbsp;beta</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">matrixc&amp;&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">C&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;result&nbsp;matrix&nbsp;C</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;);</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Computing for type matrix&lt;complexf&gt;</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_Keywords">bool&nbsp;&nbsp;matrixf::</span><span class="f_Functions">BlasL3HeMM</span><span class="f_CodeExample">(</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">ENUM_BLAS_SIDE</span><span class="f_CodeExample">&nbsp;&nbsp;</span><span class="f_Param">side</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;specifies&nbsp;side&nbsp;of&nbsp;A&nbsp;in&nbsp;the&nbsp;product</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">complexf&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">alpha</span><span class="f_CodeExample">,</span><span class="f_Param">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;scalar&nbsp;multiplier&nbsp;alpha</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">matrixcf&amp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">B</span><span class="f_CodeExample">,&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;matrix&nbsp;B</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">complexf&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">beta</span><span class="f_CodeExample">,</span><span class="f_Param">&nbsp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;scalar&nbsp;multiplier&nbsp;beta</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">matrixcf&amp;&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">C&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Param">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;result&nbsp;matrix&nbsp;C</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;);</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Parameters</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">side</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Value from the ENUM_BLAS_SIDE enumeration, which specifies the side of the input matrix A in the product:</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">if side= 'L', then </span><span class="f_Function">C = alpha*</span><span class="f_Function" style="font-weight: bold;">A</span><span class="f_Function">*B + beta*C</span><span class="f_ParameterDesrciption">;</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">if side= 'R', then </span><span class="f_Function">C = alpha*B*</span><span class="f_Function" style="font-weight: bold;">A</span><span class="f_Function"> + beta*C.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">alpha</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Scalar multiplier alpha.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">B</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Matrix B of size m-by-n.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">beta</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Scalar multiplier beta.</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">C</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in, out] &nbsp;Result matrix C of size m-by-n. If beta is not zero, then matrix C should contain actual data before entry.If matrix size differs from m-by-n, then matrix C will be resized and zeroed.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Return Value</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">Return true if successful, otherwise false in case of an <a href="errorcodes.htm" class="topiclink">error</a>.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Note</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">The input can be a Hermitian conjugated, upper triangular or lower triangular matrix. Triangular matrices are assumed to be Hermitian.</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">&nbsp;</span></p>
+<p class="p_Text"><span class="f_Text" style="font-weight: bold;">ENUM_BLAS_SIDE</span></p>
+<p class="p_Text"><span class="f_Text">An enumeration defining the side of the input matrix A in the product.</span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 8px 17px 7px 17px;"><table class="EnumTable" cellspacing="0" cellpadding="5" border="1">
+<thead>
+<tr class="EnumTable">
+<th class="EnumTable" style="width:200px;"><p class="p_EnumHeader"><span class="f_EnumHeader">ID</span></p>
+</th>
+<th class="EnumTable"><p class="p_EnumHeader"><span class="f_EnumHeader">Description</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="EnumTable">
+<td class="EnumTable" style="width:200px;"><p class="p_fortable"><span class="f_fortable">BLASSIDE_L</span></p>
+</td>
+<td class="EnumTable"><p class="p_fortable"><span class="f_fortable">'L': Left side</span></p>
+</td>
+</tr>
+<tr class="EnumTable">
+<td class="EnumTable" style="width:200px;"><p class="p_fortable"><span class="f_fortable">BLASSIDE_R</span></p>
+</td>
+<td class="EnumTable"><p class="p_fortable"><span class="f_fortable">'R': Right side</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_BoldTitles"><span class="f_BoldTitles">&nbsp;</span></p>
+
+</div>
+
+</body>
+</html>

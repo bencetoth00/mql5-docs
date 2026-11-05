@@ -1,0 +1,245 @@
+# OnChartEvent
+
+
+The function is called in indicators and EAs when the [ChartEvent](../../MQL5-programs/Client-Terminal-Events/Client-Terminal-Events.md#chartevent) event occurs. The function is meant for handling chart changes made by a user or an MQL5 program.
+
+```cpp
+void  OnChartEvent()
+   const int       id,       // event ID
+   const long&     lparam,   // long type event parameter
+   const double&   dparam,   // double type event parameter
+   const string&   sparam    // string type event parameter
+   );
+```
+
+Parameters
+
+id
+
+[in]  Event ID from the [ENUM\_CHART\_EVENT](../../Constants,-Enumerations-and-Structures/Chart-Constants/Types-of-Chart-Events/Types-of-Chart-Events.md) enumeration.
+
+lparam
+
+[in] [long](../../Language-Basics/Data-Types/Integer-Types/Char,-Short,-Int-and-Long-Types/Char,-Short,-Int-and-Long-Types.md#long) type event parameter
+
+dparam
+
+[in] [double](../../Language-Basics/Data-Types/Real-Types-(double,-float)/Real-Types-(double,-float).md) type event parameter
+
+sparam
+
+[in] [string](../../Language-Basics/Data-Types/String-Type/String-Type.md) type event parameter
+
+Return Value
+
+No return value
+
+Note
+
+There are 13 types of events that can be handled using the predefined OnChartEvent() function. 65535 IDs from CHARTEVENT\_CUSTOM to CHARTEVENT\_CUSTOM\_LAST inclusive are provided for custom events. To generate a custom event, use the [EventChartCustom()](../../Working-with-Events/EventChartCustom/EventChartCustom.md) function.
+
+Short event description from the [ENUM\_CHART\_EVENT](../../Constants,-Enumerations-and-Structures/Chart-Constants/Types-of-Chart-Events/Types-of-Chart-Events.md) enumeration:
+
+- CHARTEVENT\_KEYUP — occurs when a keyboard key is released, provided that the chart window has input focus;
+- CHARTEVENT\_KEYDOWN — pressing a key on the keyboard when a chart window is in focus;
+- CHARTEVENT\_MOUSE\_MOVE — moving the mouse and mouse button clicks (if [CHART\_EVENT\_MOUSE\_MOVE](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for a chart);
+- CHARTEVENT\_OBJECT\_CREATE — create a [graphical object](../../Constants,-Enumerations-and-Structures/Objects-Constants/Object-Types/Object-Types.md) (if [CHART\_EVENT\_OBJECT\_CREATE](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for a chart);
+- CHARTEVENT\_OBJECT\_CHANGE — change object properties via the properties dialog;
+- CHARTEVENT\_OBJECT\_DELETE — delete a graphical object (if [CHART\_EVENT\_OBJECT\_DELETE](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for a chart);
+- CHARTEVENT\_CLICK — clicking on a chart;
+- CHARTEVENT\_OBJECT\_CLICK — mouse click on a graphical object belonging to a chart;
+- CHARTEVENT\_OBJECT\_DRAG — dragging a graphical object with a mouse;
+- CHARTEVENT\_OBJECT\_ENDEDIT — finish editing text in the Edit input box of a graphical object ([OBJ\_EDIT](../../Constants,-Enumerations-and-Structures/Objects-Constants/Object-Types/OBJ_EDIT/OBJ_EDIT.md));
+- CHARTEVENT\_CHART\_CHANGE — change a chart;
+- CHARTEVENT\_CUSTOM+n — custom event ID, where n is within the range from 0 to 65535. CHARTEVENT\_CUSTOM\_LAST contains the last acceptable custom event ID (CHARTEVENT\_CUSTOM+65535).
+
+All [MQL5 programs](../../MQL5-programs/MQL5-programs.md) work in threads other than the main thread of the application. The main application thread is responsible for handling all Windows system messages and, in its turn, generates Windows messages for its own application as a result of this handling. For example, moving the mouse on a chart (WM\_MOUSE\_MOVE event) generates several system messages for subsequent rendering of the application window, and also sends internal messages to experts and indicators launched on the chart. A situation may occur, where the main application thread has not yet processed the WM\_PAINT system message (and therefore has not yet rendered the modified chart), while an EA or an indicator has already received the mouse movement event. In this case, the chart property CHART\_FIRST\_VISIBLE\_BAR will be changed only after the chart is rendered.
+
+For each event type, the inputs of the OnChartEvent() function have certain values necessary for handling that event. The table lists events and values passed via the parameters.
+
+| Event | 'id' parameter value | 'lparam' parameter value | 'dparam' parameter value | 'sparam' parameter value |
+| --- | --- | --- | --- | --- |
+| Key release event | CHARTEVENT\_KEYUP | Released key code | The number of event repetitions is always 1 | A bitmask string value describing the status of modifier keys. See [WM\_KEYUP message](https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keyup) |
+| Keypress event | CHARTEVENT\_KEYDOWN | Pressed key code | Number of event repetitions while a key remains pressed | A bitmask string value describing the status of modifier keys. See  [WM\_KEYDOWN message](https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keydown) |
+| Mouse events (if [CHART\_EVENT\_MOUSE\_MOVE](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for a chart) | CHARTEVENT\_MOUSE\_MOVE | X coordinate | Y coordinate | String value of the bit mask, which describes the status of the mouse keys |
+| Mouse wheel event (if [CHART\_EVENT\_MOUSE\_WHEEL](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for the chart) | CHARTEVENT\_MOUSE\_WHEEL | Flags of states of keys and mouse buttons, X and Y coordinates of the cursor. See the description in the [example](../../Constants,-Enumerations-and-Structures/Chart-Constants/Types-of-Chart-Events/Types-of-Chart-Events.md#chartevent_mouse_wheel) | The Delta value of the mouse wheel scroll | — |
+| Creating a graphical object (if [CHART\_EVENT\_OBJECT\_CREATE](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for a chart) | CHARTEVENT\_OBJECT\_CREATE | — | — | Name of a created graphical object |
+| Changing object properties via the properties dialog | CHARTEVENT\_OBJECT\_CHANGE | — | — | Name of a changed graphical object |
+| Removing a graphical object (if [CHART\_EVENT\_OBJECT\_DELETE](../../Constants,-Enumerations-and-Structures/Chart-Constants/Chart-Properties/Chart-Properties.md#enum_chart_property_integer)=true for a chart) | CHARTEVENT\_OBJECT\_DELETE | — | — | Name of a removed graphical object |
+| Mouse click on a chart | CHARTEVENT\_CLICK | X coordinate | Y coordinate | — |
+| Mouse click on a graphical object | CHARTEVENT\_OBJECT\_CLICK | X coordinate | Y coordinate | Name of a graphical object the event has occurred on |
+| Moving a graphical object with mouse | CHARTEVENT\_OBJECT\_DRAG | — | — | Name of a moved graphical object |
+| Finishing a text editing in the "Input field" graphical object input box | CHARTEVENT\_OBJECT\_ENDEDIT | — | — | Name of the "Input field" graphical object, in which text editing completed |
+| Resizing the chart or modifying the chart properties via the properties dialog window | CHARTEVENT\_CHART\_CHANGE | — | — | — |
+| Custom event with N number | CHARTEVENT\_CUSTOM+N | Value defined by the [EventChartCustom()](../../Working-with-Events/EventChartCustom/EventChartCustom.md) function | Value defined by the [EventChartCustom()](../../Working-with-Events/EventChartCustom/EventChartCustom.md) function | Value defined by the [EventChartCustom()](../../Working-with-Events/EventChartCustom/EventChartCustom.md) function |
+
+Sample chart event listener:
+
+```cpp
+//+------------------------------------------------------------------+
+//|                                          OnChartEvent_Sample.mq5 |
+//|                        Copyright 2018, MetaQuotes Software Corp. |
+//|                                             https://www.mql5.com |
+//+------------------------------------------------------------------+
+#property copyright "Copyright 2000-2024, MetaQuotes Ltd."
+#property link      "https://www.mql5.com"
+#property version   "1.00"
+#property description "Sample chart event listener and custom events generator"
+//--- service keys IDs
+#define KEY_NUMPAD_5       12
+#define KEY_LEFT           37
+#define KEY_UP             38
+#define KEY_RIGHT          39
+#define KEY_DOWN           40
+#define KEY_NUMLOCK_DOWN   98
+#define KEY_NUMLOCK_LEFT  100
+#define KEY_NUMLOCK_5     101
+#define KEY_NUMLOCK_RIGHT 102
+#define KEY_NUMLOCK_UP    104
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+  {
+//--- display the CHARTEVENT_CUSTOM constant value
+   Print("CHARTEVENT_CUSTOM=",CHARTEVENT_CUSTOM);
+//---
+   Print("Launched the EA ",MQLInfoString(MQL5_PROGRAM_NAME));
+//--- set the flag of receiving chart object creation events
+   ChartSetInteger(ChartID(),CHART_EVENT_OBJECT_CREATE,true);
+//--- set the flag of receiving chart object removal events
+   ChartSetInteger(ChartID(),CHART_EVENT_OBJECT_DELETE,true);
+//--- enabling mouse wheel scrolling messages
+   ChartSetInteger(0,CHART_EVENT_MOUSE_WHEEL,1);
+//--- forced updating of chart properties ensures readiness for event processing
+   ChartRedraw();
+//---
+   return(INIT_SUCCEEDED);
+  }
+//+------------------------------------------------------------------+
+//| Expert tick function                                             |
+//+------------------------------------------------------------------+
+void OnTick()
+  {
+//--- tick counter for generating a custom event
+   static int tick_counter=0;
+//--- divide accumulated ticks by this value
+   int simple_number=113;
+//---
+   tick_counter++;
+//--- send a custom event if the tick counter is multiple of simple_number
+   if(tick_counter%simple_number==0)
+     {
+      //--- form custom event ID from 0 to 65535
+      ushort custom_event_id=ushort(tick_counter%65535);
+      //---  send a custom event with parameters filling
+      EventChartCustom(ChartID(),custom_event_id,tick_counter,SymbolInfoDouble(Symbol(),SYMBOL_BID),__FUNCTION__);
+      //--- add to a log for analyzing the example results
+      Print(__FUNCTION__,": Sent a custom event ID=",custom_event_id);
+     }
+//---
+  }
+//+------------------------------------------------------------------+
+//| ChartEvent function                                              |
+//+------------------------------------------------------------------+
+void OnChartEvent(const int id,
+                  const long &lparam,
+                  const double &dparam,
+                  const string &sparam)
+  {
+//--- keypress
+   if(id==CHARTEVENT_KEYDOWN)
+     {
+      switch((int)lparam)
+        {
+         case KEY_NUMLOCK_LEFT:  Print("Pressed KEY_NUMLOCK_LEFT");   break;
+         case KEY_LEFT:          Print("Pressed KEY_LEFT");           break;
+         case KEY_NUMLOCK_UP:    Print("Pressed KEY_NUMLOCK_UP");     break;
+         case KEY_UP:            Print("Pressed KEY_UP");             break;
+         case KEY_NUMLOCK_RIGHT: Print("Pressed KEY_NUMLOCK_RIGHT");  break;
+         case KEY_RIGHT:         Print("Pressed KEY_RIGHT");          break;
+         case KEY_NUMLOCK_DOWN:  Print("Pressed KEY_NUMLOCK_DOWN");   break;
+         case KEY_DOWN:          Print("Pressed KEY_DOWN");           break;
+         case KEY_NUMPAD_5:      Print("Pressed KEY_NUMPAD_5");       break;
+         case KEY_NUMLOCK_5:     Print("Pressed KEY_NUMLOCK_5");      break;
+         default:                Print("Pressed unlisted key");
+        }
+     }
+//--- left-clicking on a chart
+   if(id==CHARTEVENT_CLICK)
+      Print("Mouse click coordinates on a chart: x = ",lparam,"  y = ",dparam);
+//--- clicking on a graphical object
+   if(id==CHARTEVENT_OBJECT_CLICK)
+      Print("Clicking a mouse button on an object named '"+sparam+"'");
+//--- object removed
+   if(id==CHARTEVENT_OBJECT_DELETE)
+      Print("Removed object named ",sparam);
+//--- object created
+   if(id==CHARTEVENT_OBJECT_CREATE)
+      Print("Created object named ",sparam);
+//--- changed object
+   if(id==CHARTEVENT_OBJECT_CHANGE)
+      Print("Changed object named ",sparam);
+//--- object moved or anchor point coordinates changed
+   if(id==CHARTEVENT_OBJECT_DRAG)
+      Print("Changing anchor points of object named ",sparam);
+//--- changed a text in the input field of the Edit graphical object
+   if(id==CHARTEVENT_OBJECT_ENDEDIT)
+      Print("Changed text in Edit object ",sparam,"  id=",id);
+//--- mouse movement events
+   if(id==CHARTEVENT_MOUSE_MOVE)
+      Comment("POINT: ",(int)lparam,",",(int)dparam,"\n",MouseState((uint)sparam));
+   if(id==CHARTEVENT_MOUSE_WHEEL)
+     {
+      //--- Consider the state of mouse buttons and wheel for this event
+      int flg_keys = (int)(lparam>>32);          // The flag of states of the Ctrl and Shift keys, and mouse buttons
+      int x_cursor = (int)(short)lparam;         // X coordinate where the mouse wheel event occurred
+      int y_cursor = (int)(short)(lparam>>16);   // Y coordinate where the mouse wheel event occurred
+      int delta    = (int)dparam;                // Total value of mouse scroll, triggers when +120 or -120 is reached
+      //--- handling the flag
+      string str_keys="";
+      if((flg_keys&0x0001)!=0)
+         str_keys+="LMOUSE ";
+      if((flg_keys&0x0002)!=0)
+         str_keys+="RMOUSE ";
+      if((flg_keys&0x0004)!=0)
+         str_keys+="SHIFT ";
+      if((flg_keys&0x0008)!=0)
+         str_keys+="CTRL ";
+      if((flg_keys&0x0010)!=0)
+         str_keys+="MMOUSE ";
+      if((flg_keys&0x0020)!=0)
+         str_keys+="X1MOUSE ";
+      if((flg_keys&0x0040)!=0)
+         str_keys+="X2MOUSE ";
+      if(str_keys!="")
+         str_keys=", keys='"+StringSubstr(str_keys,0,StringLen(str_keys)-1)+"'";
+      PrintFormat("%s: X=%d, Y=%d, delta=%d%s",EnumToString(CHARTEVENT_MOUSE_WHEEL),x_cursor,y_cursor,delta,str_keys);
+     }
+//--- event of resizing the chart or modifying the chart properties using the properties dialog window
+   if(id==CHARTEVENT_CHART_CHANGE)
+      Print("Changing the chart size or properties");
+//--- custom event
+   if(id>CHARTEVENT_CUSTOM)
+      PrintFormat("Custom event ID=%d, lparam=%d, dparam=%G, sparam=%s",id,lparam,dparam,sparam);
+  }
+//+------------------------------------------------------------------+
+//| MouseState                                                       |
+//+------------------------------------------------------------------+
+string MouseState(uint state)
+  {
+   string res;
+   res+="\nML: "   +(((state& 1)== 1)?"DN":"UP");   // mouse left
+   res+="\nMR: "   +(((state& 2)== 2)?"DN":"UP");   // mouse right
+   res+="\nMM: "   +(((state&16)==16)?"DN":"UP");   // mouse middle
+   res+="\nMX: "   +(((state&32)==32)?"DN":"UP");   // mouse first X key
+   res+="\nMY: "   +(((state&64)==64)?"DN":"UP");   // mouse second X key
+   res+="\nSHIFT: "+(((state& 4)== 4)?"DN":"UP");   // shift key
+   res+="\nCTRL: " +(((state& 8)== 8)?"DN":"UP");   // control key
+   return(res);
+  }
+```
+
+See also
+
+[EventChartCustom](../../Working-with-Events/EventChartCustom/EventChartCustom.md), [Types of chart events](../../Constants,-Enumerations-and-Structures/Chart-Constants/Types-of-Chart-Events/Types-of-Chart-Events.md), [Event handling functions](../../Language-Basics/Functions/Event-Handling-Functions/Event-Handling-Functions.md), [Program running](../../MQL5-programs/Program-Running/Program-Running.md), [Client terminal events](../../MQL5-programs/Client-Terminal-Events/Client-Terminal-Events.md)

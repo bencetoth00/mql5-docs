@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+  <title>GlobalVariableName</title>
+  <meta name="keywords" content="GlobalVariableName" />
+  <link type="text/css" href="default.css" rel="stylesheet" />
+  <link type="text/css" href="screenshot.css" rel="stylesheet" />
+  
+
+   
+   
+   
+
+
+</head>
+
+<body style="background-color:#FFFFFF; font-family:'Trebuchet MS',Tahoma,Arial,Helvetica,sans-serif; margin:0px;">
+
+
+
+<table width="100%" height="49"  border="0" cellpadding="0" cellspacing="0" style="margin-top:0px; background-color:#1660af;">
+  <tr>
+    <td></td>
+    <td valign="middle">
+      <table style="margin-top:4px; margin-bottom:5px;" width="100%"  border="0" cellspacing="0" cellpadding="5">
+        <tr valign="middle">
+          <td class="nav">
+<a class="h_m" href="mql5_guide.htm">          MQL5 Reference </a> / <a class="h_m" href="globals.htm"> Global Variables of the Terminal </a>/ GlobalVariableName
+          </td>
+          <td width="70" align="right">
+          <a href="globalvariableget.htm"><img style="vertical-align:middle;" src="previous.png" alt="Previous" width="27" height="27" border=0></a>&nbsp;
+          <a href="globalvariableset.htm"><img style="vertical-align:middle;" src="next.png" alt="Next" width="27" height="27" border="0"></a>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="5"></td>
+  </tr>
+</table>
+
+
+
+<div id="help">
+<p class="p_H1"><span class="f_H1">GlobalVariableName</span></p>
+<p class="p_Function"><span class="f_Function">Returns the name of a global variable by its ordinal number.</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_Keywords">string&nbsp;&nbsp;</span><span class="f_Functions">GlobalVariableName</span><span class="f_CodeExample">(</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_Keywords">int</span><span class="f_CodeExample">&nbsp;&nbsp;</span><span class="f_Param">index</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_Comments">//&nbsp;Global&nbsp;variable&nbsp;number&nbsp;in&nbsp;the&nbsp;list&nbsp;of&nbsp;global&nbsp;variables</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;);</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Parameters</span></p>
+<p class="p_FunctionParameter"><span class="f_FunctionParameter">index</span></p>
+<p class="p_ParameterDesrciption"><span class="f_ParameterDesrciption">[in] &nbsp;Sequence number in the list of global variables. It should be greater than or equal to 0 and less than <a href="globalvariablestotal.htm" class="topiclink">GlobalVariablesTotal()</a>.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Return Value</span></p>
+<p class="p_FunctionRemark"><span class="f_FunctionRemark">Global variable name by its ordinal number in the list of global variables. For more details about the <a href="errorcodes.htm" class="topiclink">error</a>, call <a href="getlasterror.htm" class="topiclink">GetLastError()</a>.</span></p>
+<p class="p_BoldTitles"><span class="f_BoldTitles">Note</span></p>
+<p class="p_FunctionRemark"><span class="f_Text">Global variables exist in the client terminal during 4 weeks since their last use, then they are automatically deleted.</span></p>
+<p class="p_Text"><span class="f_Text">&nbsp;</span></p>
+<p class="p_Text"><span class="f_Text" style="font-weight: bold;">Example:</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; border-color: #b3b3b3; border-style: solid; border-width: thin; background: #fbf9f5; padding: 0 0 0 0; margin: 2px 17px 2px 17px;"><table cellspacing="0" cellpadding="3" border="0" style="text-align: justify;border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:3px; border:none"><p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="color: #0000ff;">#property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">copyright</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;Copyright&nbsp;2025,&nbsp;MetaQuotes&nbsp;Ltd.&quot;</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">#property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">link</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;https://www.mql5.com&quot;</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">#property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">version</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;1.00&quot;</span>
+<br><span class="f_CodeExample">&nbsp;</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">#define</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #ff0000;">GV_NAME</span><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet&quot;</span>
+<br><span class="f_CodeExample" style="color: #808080;">//+------------------------------------------------------------------+</span>
+<br><span class="f_CodeExample" style="color: #808080;">//|&nbsp;Script&nbsp;program&nbsp;start&nbsp;function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<br><span class="f_CodeExample" style="color: #808080;">//+------------------------------------------------------------------+</span>
+<br><span class="f_CodeExample" style="color: #0000ff;">void</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">OnStart</span><span class="f_CodeExample">()</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;first,&nbsp;let's&nbsp;create&nbsp;global&nbsp;variables</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">for</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #0000ff;">int</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">;&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">&lt;</span><span class="f_CodeExample" style="color: #333333;">21</span><span class="f_CodeExample">;&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">++)</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableSet</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #ff0000;">GV_NAME</span><span class="f_CodeExample">+</span><span class="f_CodeExample" style="color: #0000ff;">string</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">),</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;get&nbsp;the&nbsp;number&nbsp;of&nbsp;global&nbsp;variables&nbsp;of&nbsp;the&nbsp;client&nbsp;terminal&nbsp;and&nbsp;display&nbsp;their&nbsp;names&nbsp;in&nbsp;a&nbsp;loop</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">int</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">total</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariablesTotal</span><span class="f_CodeExample">();</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">for</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #0000ff;">int</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #333333;">total</span><span class="f_CodeExample">-</span><span class="f_CodeExample" style="color: #333333;">1</span><span class="f_CodeExample">;&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">&gt;=</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">;&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">--)</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">string</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="color: #333333;">name</span><span class="f_CodeExample">=</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">if</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #0000ff;">GetLastError</span><span class="f_CodeExample">()!=</span><span class="f_CodeExample" style="color: #333333;">0</span><span class="f_CodeExample">)</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">PrintFormat</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #008080;">&quot;Error&nbsp;%d&nbsp;occurred&nbsp;while&nbsp;getting&nbsp;global&nbsp;variable&nbsp;name&nbsp;at&nbsp;index&nbsp;%d&quot;</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GetLastError</span><span class="f_CodeExample">(),&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">ResetLastError</span><span class="f_CodeExample">();</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">continue</span><span class="f_CodeExample">;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">PrintFormat</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #008080;">&quot;GlobalVariableName(%02d)&nbsp;=&nbsp;\&quot;</span><span class="f_CodeExample">%</span><span class="f_CodeExample" style="color: #333333;">s</span><span class="f_CodeExample">\</span><span class="f_CodeExample" style="color: #008080;">&quot;&quot;</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">i</span><span class="f_CodeExample">,&nbsp;</span><span class="f_CodeExample" style="color: #333333;">name</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<br><span class="f_CodeExample" style="color: #808080;">//---&nbsp;clean&nbsp;up</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariablesDeleteAll</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #ff0000;">GV_NAME</span><span class="f_CodeExample">);</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;/*</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;result:</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">20</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet9&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">19</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet8&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">18</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet7&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">17</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet6&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">16</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet5&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">15</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet4&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">14</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet3&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">13</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet20&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">12</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet2&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">11</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet19&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">10</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet18&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">09</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet17&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">08</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet16&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">07</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet15&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">06</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet14&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">05</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet13&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">04</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet12&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">03</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet11&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">02</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet10&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">01</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet1&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="color: #0000ff;">GlobalVariableName</span><span class="f_CodeExample">(</span><span class="f_CodeExample" style="color: #333333;">00</span><span class="f_CodeExample">)&nbsp;=&nbsp;</span><span class="f_CodeExample" style="color: #008080;">&quot;TestGlobalVariableSet0&quot;</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;*/</span>
+<br><span class="f_CodeExample">&nbsp;&nbsp;}</span></p>
+</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</body>
+</html>

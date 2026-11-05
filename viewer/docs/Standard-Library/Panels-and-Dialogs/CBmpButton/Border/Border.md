@@ -1,0 +1,35 @@
+# Border
+
+# Border (Get method)
+
+Gets the "Border" (border width) property of the control.
+
+```cpp
+int  Border()  const
+```
+
+Return Value
+
+The "Border" property.
+
+ 
+
+# Border (Set method)
+
+Sets the "Border" (border width) property of the control.
+
+```cpp
+bool  Border(
+   const int  value      // value
+   )
+```
+
+Parameters
+
+value
+
+[in]  New value of the "Border" property.
+
+Return Value
+
+true - successful, otherwise - false.

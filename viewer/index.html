@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="MQL5 programming language reference" />
+    <title>MQL5 Reference</title>
+    <link rel="stylesheet" href="assets/style.css?v=compact-doc-spacing-20261105" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <button
+        id="mobileMenu"
+        class="icon-btn mobile-only"
+        aria-label="Toggle navigation"
+      >
+        ☰
+      </button>
+      <a class="brand" href="./"
+        ><span class="brand-mark">M5</span><span>MQL5 <b>Reference</b></span></a
+      >
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span
+        ><input
+          id="search"
+          type="search"
+          placeholder="Search functions, constants, examples…"
+          autocomplete="off"
+        /><kbd>Ctrl K</kbd>
+        <div id="searchResults" class="search-results hidden"></div>
+      </div>
+      <a
+        class="source-link"
+        href="https://www.mql5.com/en/docs"
+        target="_blank"
+        rel="noopener"
+        >Official docs ↗</a
+      >
+    </header>
+    <div class="layout">
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-head">
+          <span>DOCUMENTATION</span
+          ><button id="expandAll" class="text-btn">Expand all</button>
+        </div>
+        <nav id="tree" aria-label="Documentation navigation">
+          <p class="muted pad">Loading navigation…</p>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="breadcrumbs" id="breadcrumbs">MQL5 Reference</div>
+        <article id="content" class="article">
+          <div class="welcome">
+            <div class="eyebrow">LANGUAGE REFERENCE</div>
+            <h1>MQL5 Documentation</h1>
+            <p>Search the reference or browse the documentation tree.</p>
+            <div class="loading">Loading documentation…</div>
+          </div>
+        </article>
+        <footer>Local Markdown source · MQL5 Reference</footer>
+      </main>
+    </div>
+    <script src="assets/app.js?v=legacy-route-fix-20261105"></script>
+  </body>
+</html>

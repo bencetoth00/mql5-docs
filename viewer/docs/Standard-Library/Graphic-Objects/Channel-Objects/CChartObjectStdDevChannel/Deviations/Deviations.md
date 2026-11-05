@@ -1,0 +1,33 @@
+# Deviations
+
+# Deviation (Get Method)
+
+Gets "Deviation" property value.
+
+```cpp
+double  Deviation() const
+```
+
+Return Value
+
+Value of "Deviation" property assigned to the class instance. If there is no object assigned, it returns [EMPTY\_VALUE](../../../../../Constants,-Enumerations-and-Structures/Named-Constants/Other-Constants/Other-Constants.md).
+
+# Deviation (Set Method)
+
+Sets "Deviation" property value.
+
+```cpp
+bool  Deviation(
+   double  deviation      // deviation
+   )
+```
+
+Parameters
+
+deviation
+
+[in]  New value for "Deviation" property.
+
+Return Value
+
+true - successful, false - cannot change the property.
