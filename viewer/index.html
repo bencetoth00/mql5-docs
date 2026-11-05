@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content="MQL5 programming language reference" />
     <title>MQL5 Reference</title>
-    <link rel="stylesheet" href="assets/style.css?v=compact-doc-spacing-20261105" />
+    <script>
+      (() => {
+        const savedTheme = localStorage.getItem("mql5-reference-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = savedTheme || (prefersDark ? "dark" : "light");
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/style.css?v=dark-mode-20261105" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -49,6 +56,7 @@
         rel="noopener"
         >Official docs ↗</a
       >
+      <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
     </header>
     <div class="layout">
       <aside id="sidebar" class="sidebar">
@@ -62,6 +70,7 @@
       </aside>
       <main class="main">
         <div class="breadcrumbs" id="breadcrumbs">MQL5 Reference</div>
+        <nav id="pageNav" class="page-nav" aria-label="Page navigation"></nav>
         <article id="content" class="article">
           <div class="welcome">
             <div class="eyebrow">LANGUAGE REFERENCE</div>
@@ -70,9 +79,10 @@
             <div class="loading">Loading documentation…</div>
           </div>
         </article>
+        <nav id="pageNavBottom" class="page-nav page-nav-bottom" aria-label="Page navigation"></nav>
         <footer>Local Markdown source · MQL5 Reference</footer>
       </main>
     </div>
-    <script src="assets/app.js?v=legacy-route-fix-20261105"></script>
+    <script src="assets/app.js?v=dark-mode-20261105"></script>
   </body>
 </html>

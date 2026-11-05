@@ -1,7 +1,17 @@
 const $ = (s) => document.querySelector(s);
 
+function syncThemeToggle() {
+  const button = $("#themeToggle");
+  if (!button) return;
+  const isDark = document.documentElement.dataset.theme === "dark";
+  button.textContent = isDark ? "Light mode" : "Dark mode";
+  button.setAttribute("aria-pressed", String(isDark));
+  button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+}
+
 let navData = [],
   searchData = [],
+  navSequence = [],
   currentDoc = "index.md";
 
 const cleanPath = (p) =>
@@ -28,6 +38,59 @@ function canonicalDocPath(path) {
 
 function titleFromPath(p) {
   return p.split("/").pop().replace(/\.md$/i, "").replace(/[-_]/g, " ");
+}
+
+function collectNavigation(items) {
+  for (const item of items) {
+    if (item.path && !navSequence.some((entry) => entry.path === item.path)) {
+      navSequence.push({ path: item.path, title: item.title });
+    }
+    if (item.children?.length) collectNavigation(item.children);
+  }
+}
+
+function updatePageNavigation(path) {
+  const hosts = [$("#pageNav"), $("#pageNavBottom")].filter(Boolean);
+  if (!hosts.length) return;
+  const index = navSequence.findIndex((item) => item.path === path);
+  const neighbors = index < 0 ? [undefined, undefined] : [navSequence[index - 1], navSequence[index + 1]];
+  for (const host of hosts) {
+    host.replaceChildren();
+    for (const [direction, item] of [
+      ["previous", neighbors[0]],
+      ["next", neighbors[1]],
+    ]) {
+    const link = document.createElement("a");
+    link.className = `page-nav-link page-nav-${direction}`;
+    link.setAttribute("aria-label", item ? `${direction}: ${item.title}` : `No ${direction} page`);
+    if (item) {
+      link.href = "?doc=" + encodeURIComponent(item.path);
+      const arrow = document.createElement("span");
+      arrow.className = "page-nav-arrow";
+      arrow.textContent = direction === "previous" ? "←" : "→";
+      const text = document.createElement("span");
+      text.className = "page-nav-text";
+      const label = document.createElement("small");
+      label.textContent = direction === "previous" ? "Previous" : "Next";
+      const title = document.createElement("strong");
+      title.textContent = item.title;
+      text.append(label, title);
+      if (direction === "previous") link.append(arrow, text);
+      else link.append(text, arrow);
+      link.onclick = (event) => {
+        event.preventDefault();
+        history.pushState({}, "", link.href);
+        loadDoc(item.path);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+    } else {
+      link.classList.add("is-disabled");
+      link.setAttribute("aria-disabled", "true");
+      link.tabIndex = -1;
+    }
+      host.append(link);
+    }
+  }
 }
 
 function buildTree(items, host) {
@@ -160,6 +223,7 @@ async function loadDoc(path) {
     history.replaceState({}, "", "?" + query.toString());
   }
   currentDoc = path;
+  updatePageNavigation(path);
   $("#content").innerHTML = '<p class="muted">Loading…</p>';
   try {
     const r = await fetch("docs/" + path, { cache: "no-store" });
@@ -246,6 +310,8 @@ async function init() {
     ]);
     navData = await n.json();
     searchData = await s.json();
+    navSequence = [];
+    collectNavigation(navData);
     $("#tree").innerHTML = "";
     buildTree(navData, $("#tree"));
     const p = new URLSearchParams(location.search).get("doc") || "index.md";
@@ -273,6 +339,14 @@ document.addEventListener("keydown", (e) => {
     $("#search").focus();
   }
 });
+
+$("#themeToggle").addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = nextTheme;
+  localStorage.setItem("mql5-reference-theme", nextTheme);
+  syncThemeToggle();
+});
+syncThemeToggle();
 
 $("#expandAll").onclick = () => {
   const items = [...document.querySelectorAll(".tree-children")];
