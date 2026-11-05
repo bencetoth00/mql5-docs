@@ -93,6 +93,31 @@ function updatePageNavigation(path) {
   }
 }
 
+function toggleTreePath(item, children, toggle) {
+  if (!children.classList.contains("collapsed")) {
+    children.classList.add("collapsed");
+    toggle.textContent = "";
+    return;
+  }
+
+  const pathBranches = new Set();
+  let current = item;
+  while (current) {
+    const branch = current.querySelector(":scope > .tree-children");
+    if (branch) pathBranches.add(branch);
+    current = current.parentElement.closest(".tree-item");
+  }
+
+  document.querySelectorAll("#tree .tree-children").forEach((branch) => {
+    const parentToggle = branch.parentElement.querySelector(
+      ":scope > .tree-row > .tree-toggle",
+    );
+    const isExpanded = pathBranches.has(branch);
+    branch.classList.toggle("collapsed", !isExpanded);
+    if (parentToggle) parentToggle.textContent = isExpanded ? "â–¾" : "â–¸";
+  });
+}
+
 function buildTree(items, host) {
   const ul = document.createElement("ul");
   ul.className = "tree-list";
@@ -107,7 +132,7 @@ function buildTree(items, host) {
       t.textContent = "▾";
       t.onclick = () => {
         const c = li.querySelector(":scope > .tree-children");
-        c.classList.toggle("collapsed");
+        toggleTreePath(li, c, t);
         t.textContent = c.classList.contains("collapsed") ? "▸" : "▾";
       };
       row.append(t);
@@ -139,6 +164,34 @@ function buildTree(items, host) {
     ul.append(li);
   }
   host.append(ul);
+}
+
+function setActiveTreePath(path) {
+  const tree = $("#tree");
+  tree.querySelectorAll(".tree-children").forEach((children) => {
+    children.classList.add("collapsed");
+  });
+  tree.querySelectorAll(".tree-toggle").forEach((toggle) => {
+    toggle.textContent = "";
+  });
+  tree.querySelectorAll(".tree-row").forEach((row) => row.classList.remove("active"));
+
+  const activeLink = [...tree.querySelectorAll(".tree-link")].find(
+    (link) => link.getAttribute("href") === "?doc=" + encodeURIComponent(path),
+  );
+  if (!activeLink) return;
+  const activeRow = activeLink.parentElement;
+  activeRow.classList.add("active");
+
+  let item = activeLink.closest(".tree-item");
+  while (item) {
+    const children = item.querySelector(":scope > .tree-children");
+    if (children) {
+      children.classList.remove("collapsed");
+      item.querySelector(":scope > .tree-row > .tree-toggle").textContent = "";
+    }
+    item = item.parentElement.closest(".tree-item");
+  }
 }
 
 
@@ -235,13 +288,7 @@ async function loadDoc(path) {
       .split("/")
       .join(" / ");
     document.title = titleFromPath(path) + " · MQL5 Reference";
-    $("#tree")
-      .querySelectorAll(".tree-row")
-      .forEach((x) => x.classList.remove("active"));
-    const active = [...document.querySelectorAll("#tree a")].find(
-      (a) => a.getAttribute("href") === "?doc=" + encodeURIComponent(path),
-    );
-    if (active) active.parentElement.classList.add("active");
+    setActiveTreePath(path);
     $("#content")
       .querySelectorAll("pre code")
       .forEach((el) => window.hljs?.highlightElement(el));
@@ -347,24 +394,6 @@ $("#themeToggle").addEventListener("click", () => {
   syncThemeToggle();
 });
 syncThemeToggle();
-
-$("#expandAll").onclick = () => {
-  const items = [...document.querySelectorAll(".tree-children")];
-
-  // Ha van becsukott elem, mindent kinyitunk.
-  // Ha minden nyitva van, mindent becsukunk.
-  const shouldExpand = items.some((x) =>
-    x.classList.contains("collapsed")
-  );
-
-  items.forEach((x) => {
-    x.classList.toggle("collapsed", !shouldExpand);
-  });
-
-  $("#expandAll").textContent = shouldExpand
-    ? "Collapse all"
-    : "Expand all";
-};
 
 $("#mobileMenu").onclick = () => $("#sidebar").classList.toggle("open");
 window.addEventListener("popstate", () =>
