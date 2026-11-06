@@ -47,7 +47,10 @@ def sort_tree_from_toc(node, toc_node):
         matching_toc = toc_by_title.get(norm(child.get("title", "")))
         sort_tree_from_toc(child, matching_toc)
 
-files = sorted(DOCS.rglob("*.md"))
+files = sorted(
+    f for f in DOCS.rglob("*.md")
+    if f.relative_to(DOCS).parts[0] != "hu"
+)
 
 root = {'title': 'MQL5 Reference', 'children': []}
 
@@ -104,6 +107,72 @@ def clean(node):
 clean(root)
 (DATA/'navigation.json').write_text(json.dumps(root['children'],ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 (DATA/'search-index.json').write_text(json.dumps(search,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+
+HU_TITLES = {
+    "language basics": "A nyelv alapjai",
+    "constants, enumerations and structures": "Konstansok, felsorolások és struktúrák",
+    "mql5 programs": "MQL5-programok",
+    "predefined variables": "Előre definiált változók",
+    "common functions": "Általános függvények",
+    "array functions": "Tömbfüggvények",
+    "matrix and vector methods": "Mátrix- és vektorműveletek",
+    "conversion functions": "Konverziós függvények",
+    "math functions": "Matematikai függvények",
+    "string functions": "Karakterlánc-függvények",
+    "date and time": "Dátum és idő",
+    "account information": "Számlaadatok",
+    "checkup": "Ellenőrzés",
+    "event handling": "Eseménykezelés",
+    "market info": "Piaci információk",
+    "economic calendar": "Gazdasági naptár",
+    "timeseries and indicators access": "Idősorok és indikátorok elérése",
+    "custom symbols": "Egyéni szimbólumok",
+    "chart operations": "Diagramműveletek",
+    "trade functions": "Kereskedési függvények",
+    "trade signals": "Kereskedési jelzések",
+    "network functions": "Hálózati függvények",
+    "global variables of the terminal": "A terminál globális változói",
+}
+
+def localized_node(node):
+    translated = dict(node)
+    path = node.get('path')
+    if path:
+        translated_file = DOCS / 'hu' / Path(path)
+        if translated_file.is_file():
+            translated['title'] = title_of(
+                translated_file, translated_file.read_text(encoding='utf-8', errors='replace')
+            )
+    translated['title'] = HU_TITLES.get(
+        translated['title'].casefold(), translated['title']
+    )
+    if 'children' in node:
+        translated['children'] = [localized_node(child) for child in node['children']]
+    return translated
+
+navigation_hu = [localized_node(node) for node in root['children']]
+(DATA/'navigation.hu.json').write_text(
+    json.dumps(navigation_hu, ensure_ascii=False, separators=(',', ':')), encoding='utf-8'
+)
+
+search_hu = []
+for item in search:
+    translated_file = DOCS / 'hu' / Path(item['path'])
+    if translated_file.is_file():
+        raw = translated_file.read_text(encoding='utf-8', errors='replace')
+        plain = strip_md(raw)
+        search_hu.append({
+            'title': title_of(translated_file, raw),
+            'path': item['path'],
+            'text': plain,
+            'excerpt': plain[:180],
+        })
+    else:
+        search_hu.append(item)
+(DATA/'search-index.hu.json').write_text(
+    json.dumps(search_hu, ensure_ascii=False, separators=(',', ':')), encoding='utf-8'
+)
+
 print(f'Built navigation and search index for {len(files)} Markdown files.')
 print(f'Navigation: {(DATA/"navigation.json").stat().st_size/1024:.1f} KB')
 print(f'Search index: {(DATA/"search-index.json").stat().st_size/1024/1024:.2f} MB')

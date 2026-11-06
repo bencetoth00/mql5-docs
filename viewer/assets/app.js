@@ -4,15 +4,63 @@ function syncThemeToggle() {
   const button = $("#themeToggle");
   if (!button) return;
   const isDark = document.documentElement.dataset.theme === "dark";
-  button.textContent = isDark ? "Light mode" : "Dark mode";
+  const text = uiText[currentLanguage] || uiText.en;
+  button.textContent = isDark ? text.lightMode : text.darkMode;
   button.setAttribute("aria-pressed", String(isDark));
-  button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+  button.setAttribute(
+    "aria-label",
+    isDark
+      ? currentLanguage === "hu" ? "Váltás világos módra" : "Switch to light mode"
+      : currentLanguage === "hu" ? "Váltás sötét módra" : "Switch to dark mode",
+  );
 }
 
 let navData = [],
   searchData = [],
   navSequence = [],
+  currentLanguage = "en",
   currentDoc = "index.md";
+
+const uiText = {
+  en: {
+    documentation: "DOCUMENTATION",
+    search: "Search functions, constants, examples…",
+    source: "Official docs ↗",
+    previous: "Previous",
+    next: "Next",
+    darkMode: "Dark mode",
+    lightMode: "Light mode",
+    reference: "MQL5 Reference",
+    fallback: "This page is not translated yet. Showing the English version.",
+  },
+  hu: {
+    documentation: "DOKUMENTÁCIÓ",
+    search: "Függvények, konstansok, példák keresése…",
+    source: "Hivatalos dokumentáció ↗",
+    previous: "Előző",
+    next: "Következő",
+    darkMode: "Sötét mód",
+    lightMode: "Világos mód",
+    reference: "MQL5-referencia",
+    fallback: "Ez az oldal még nincs lefordítva. Az angol változatot látod.",
+  },
+};
+
+function docUrl(path) {
+  const query = new URLSearchParams({ doc: path });
+  if (currentLanguage !== "en") query.set("lang", currentLanguage);
+  return "?" + query.toString();
+}
+
+function applyUiLanguage() {
+  const text = uiText[currentLanguage];
+  document.documentElement.lang = currentLanguage;
+  $("#languageSelect").value = currentLanguage;
+  $("#search").placeholder = text.search;
+  $(".sidebar-head span").textContent = text.documentation;
+  $(".source-link").textContent = text.source;
+  syncThemeToggle();
+}
 
 const cleanPath = (p) =>
   decodeURIComponent(p).replace(/^\/+/, "").replace(/\\/g, "/");
@@ -49,6 +97,18 @@ function collectNavigation(items) {
   }
 }
 
+function findNavigationTrail(items, path, trail = []) {
+  for (const item of items) {
+    const nextTrail = [...trail, item.title];
+    if (item.path === path) return nextTrail;
+    if (item.children?.length) {
+      const nested = findNavigationTrail(item.children, path, nextTrail);
+      if (nested) return nested;
+    }
+  }
+  return null;
+}
+
 function updatePageNavigation(path) {
   const hosts = [$("#pageNav"), $("#pageNavBottom")].filter(Boolean);
   if (!hosts.length) return;
@@ -64,14 +124,15 @@ function updatePageNavigation(path) {
     link.className = `page-nav-link page-nav-${direction}`;
     link.setAttribute("aria-label", item ? `${direction}: ${item.title}` : `No ${direction} page`);
     if (item) {
-      link.href = "?doc=" + encodeURIComponent(item.path);
+      link.href = docUrl(item.path);
       const arrow = document.createElement("span");
       arrow.className = "page-nav-arrow";
       arrow.textContent = direction === "previous" ? "←" : "→";
       const text = document.createElement("span");
       text.className = "page-nav-text";
       const label = document.createElement("small");
-      label.textContent = direction === "previous" ? "Previous" : "Next";
+      label.textContent =
+        direction === "previous" ? uiText[currentLanguage].previous : uiText[currentLanguage].next;
       const title = document.createElement("strong");
       title.textContent = item.title;
       text.append(label, title);
@@ -146,12 +207,13 @@ function buildTree(items, host) {
     const a = document.createElement("a");
     a.className = "tree-link";
     a.textContent = item.title;
-    a.href = item.path ? "?doc=" + encodeURIComponent(item.path) : "#";
+    a.dataset.doc = item.path || "";
+    a.href = item.path ? docUrl(item.path) : "#";
     if (item.path) {
       a.onclick = (e) => {
         e.preventDefault();
         loadDoc(item.path);
-        history.pushState({}, "", "?doc=" + encodeURIComponent(item.path));
+        history.pushState({}, "", docUrl(item.path));
         $("#sidebar").classList.remove("open");
       };
     }
@@ -180,7 +242,7 @@ function setActiveTreePath(path) {
   tree.querySelectorAll(".tree-row").forEach((row) => row.classList.remove("active"));
 
   const activeLink = [...tree.querySelectorAll(".tree-link")].find(
-    (link) => link.getAttribute("href") === "?doc=" + encodeURIComponent(path),
+    (link) => link.dataset.doc === path,
   );
   if (!activeLink) return;
   const activeRow = activeLink.parentElement;
@@ -246,7 +308,7 @@ function renderMarkdown(md, path) {
 
     if (file.endsWith(".md")) {
       const target = cleanPath((base ? base + "/" : "") + file);
-      return `<a href="?doc=${encodeURIComponent(target)}${
+      return `<a href="${docUrl(target)}${
         hash ? "#" + hash : ""
       }" data-doc="${target}">${text}</a>`;
     }
@@ -275,23 +337,33 @@ async function loadDoc(path) {
   if (!path.endsWith(".md")) path += ".md";
   path = canonicalDocPath(path);
   const query = new URLSearchParams(location.search);
-  if (query.has("doc") && query.get("doc") !== path) {
-    query.set("doc", path);
+  query.set("doc", path);
+  if (currentLanguage === "en") query.delete("lang");
+  else query.set("lang", currentLanguage);
+  if (location.search !== "?" + query.toString())
     history.replaceState({}, "", "?" + query.toString());
-  }
   currentDoc = path;
   updatePageNavigation(path);
   $("#content").innerHTML = '<p class="muted">Loading…</p>';
   try {
-    const r = await fetch("docs/" + path, { cache: "no-store" });
+    let fallbackToEnglish = false;
+    let r = currentLanguage === "hu"
+      ? await fetch("docs/hu/" + path, { cache: "no-store" })
+      : await fetch("docs/" + path, { cache: "no-store" });
+    if (!r.ok && currentLanguage !== "en") {
+      fallbackToEnglish = true;
+      r = await fetch("docs/" + path, { cache: "no-store" });
+    }
     if (!r.ok) throw new Error("HTTP " + r.status);
     const md = await r.text();
-    $("#content").innerHTML = renderMarkdown(md, path);
-    $("#breadcrumbs").textContent = path
-      .replace(/\.md$/, "")
-      .split("/")
-      .join(" / ");
-    document.title = titleFromPath(path) + " · MQL5 Reference";
+    const fallbackNotice = fallbackToEnglish
+      ? `<p class="translation-fallback">${uiText[currentLanguage].fallback}</p>`
+      : "";
+    $("#content").innerHTML = fallbackNotice + renderMarkdown(md, path);
+    $("#breadcrumbs").textContent =
+      findNavigationTrail(navData, path)?.join(" / ") || path.replace(/\.md$/, "").split("/").join(" / ");
+    const pageTitle = navSequence.find((item) => item.path === path)?.title || titleFromPath(path);
+    document.title = pageTitle + " · " + uiText[currentLanguage].reference;
     setActiveTreePath(path);
     $("#content")
       .querySelectorAll("pre code")
@@ -333,7 +405,7 @@ function showResults(q) {
   for (const { d } of scored.slice(0, 30)) {
     const a = document.createElement("a");
     a.className = "result";
-    a.href = "?doc=" + encodeURIComponent(d.path);
+    a.href = docUrl(d.path);
     const strong = document.createElement("strong");
     strong.textContent = d.title;
     const small = document.createElement("small");
@@ -342,7 +414,7 @@ function showResults(q) {
     a.onclick = (e) => {
       e.preventDefault();
       loadDoc(d.path);
-      history.pushState({}, "", "?doc=" + encodeURIComponent(d.path));
+      history.pushState({}, "", docUrl(d.path));
       box.classList.add("hidden");
       $("#search").value = "";
     };
@@ -355,17 +427,16 @@ function showResults(q) {
 
 async function init() {
   try {
-    const [n, s] = await Promise.all([
-      fetch("data/navigation.json", { cache: "no-store" }),
-      fetch("data/search-index.json", { cache: "no-store" }),
-    ]);
-    navData = await n.json();
-    searchData = await s.json();
-    navSequence = [];
-    collectNavigation(navData);
-    $("#tree").innerHTML = "";
-    buildTree(navData, $("#tree"));
-    const p = new URLSearchParams(location.search).get("doc") || "index.md";
+    const params = new URLSearchParams(location.search);
+    const requestedLanguage = params.get("lang");
+    currentLanguage = ["en", "hu"].includes(requestedLanguage)
+      ? requestedLanguage
+      : localStorage.getItem("mql5-reference-language") === "hu"
+        ? "hu"
+        : "en";
+    applyUiLanguage();
+    await loadLanguageData(currentLanguage);
+    const p = params.get("doc") || "index.md";
     loadDoc(p);
   } catch (e) {
     $("#tree").innerHTML =
@@ -374,7 +445,39 @@ async function init() {
   }
 }
 
+async function loadLanguageData(language) {
+  const suffix = language === "hu" ? ".hu" : "";
+  const [n, s] = await Promise.all([
+    fetch(`data/navigation${suffix}.json`, { cache: "no-store" }),
+    fetch(`data/search-index${suffix}.json`, { cache: "no-store" }),
+  ]);
+  if (!n.ok || !s.ok) throw new Error(`Could not load ${language} navigation data`);
+    navData = await n.json();
+    searchData = await s.json();
+    navSequence = [];
+    collectNavigation(navData);
+    $("#tree").innerHTML = "";
+    buildTree(navData, $("#tree"));
+}
+
 $("#search").addEventListener("input", (e) => showResults(e.target.value));
+
+$("#languageSelect").addEventListener("change", async (event) => {
+  currentLanguage = event.target.value;
+  localStorage.setItem("mql5-reference-language", currentLanguage);
+  applyUiLanguage();
+  history.pushState({}, "", docUrl(currentDoc));
+  try {
+    await loadLanguageData(currentLanguage);
+    loadDoc(currentDoc);
+  } catch (error) {
+    currentLanguage = "en";
+    $("#languageSelect").value = "en";
+    applyUiLanguage();
+    await loadLanguageData("en");
+    loadDoc(currentDoc);
+  }
+});
 
 $("#search").addEventListener("keydown", (e) => {
   if (e.key === "Escape") $("#searchResults").classList.add("hidden");
@@ -445,7 +548,15 @@ sidebarResize.addEventListener("keydown", (event) => {
 });
 
 $("#mobileMenu").onclick = () => $("#sidebar").classList.toggle("open");
-window.addEventListener("popstate", () =>
-  loadDoc(new URLSearchParams(location.search).get("doc") || "index.md"),
-);
+window.addEventListener("popstate", async () => {
+  const params = new URLSearchParams(location.search);
+  const language = params.get("lang") === "hu" ? "hu" : "en";
+  if (language !== currentLanguage) {
+    currentLanguage = language;
+    localStorage.setItem("mql5-reference-language", language);
+    applyUiLanguage();
+    await loadLanguageData(language);
+  }
+  loadDoc(params.get("doc") || "index.md");
+});
 init();

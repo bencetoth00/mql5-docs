@@ -1,0 +1,20 @@
+# Upper
+
+
+A megadott indexhez tartozó felső puffer elemét adja vissza.
+
+```cpp
+double  Upper(
+   int  index      // index
+   )
+```
+
+Paraméterek
+
+index
+
+[in]  A felső puffer elemének indexe.
+
+Visszatérési érték
+
+A megadott indexhez tartozó felső pufferelem, vagy [EMPTY\_VALUE](../../../../../Constants,-Enumerations-and-Structures/Named-Constants/Other-Constants/Other-Constants.md), ha nincs érvényes adat.
